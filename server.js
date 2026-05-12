@@ -77,7 +77,14 @@ function syncDataToFile() {
 
 // استدعاء الوظيفة لإنشاء الملف لأول مرة
 syncDataToFile();
-
+app.get('/getonline', (req, res) => {
+    // إرسال البيانات كـ JSON للمتصفح
+    res.json({
+        users: users,
+        rooms: rooms,
+        powers: powers
+    });
+});
 
 // ================================================================
 // دوال مساعدة
