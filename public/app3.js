@@ -198,7 +198,7 @@ setTimeout(function () {
 
 }, 10);
 
-}, 10);
+
 
 function logout() {
     send("logout", {});
