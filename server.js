@@ -53,6 +53,31 @@ const powers = [
 const reservedNames = {
   'المدير': '123456',
 };
+const fs = require('fs');
+
+// الوظيفة المسؤولة عن سحب البيانات من المصفوفات وحفظها في الملف
+function syncDataToFile() {
+    // تجميع البيانات من المصفوفات المعرفة لديك
+    const dataToStore = {
+        users: users,   // يسحب من كائن users المعرف عندك
+        rooms: rooms,   // يسحب من مصفوفة rooms
+        powers: powers, // يسحب من مصفوفة powers
+        lastSync: new Date().toLocaleString('ar-YE') // إضافة وقت التحديث
+    };
+
+    // تحويل البيانات لنص وحفظها في ملف getonline.json
+    fs.writeFile('getonline', JSON.stringify(dataToStore, null, 4), (err) => {
+        if (err) {
+            console.error("خطأ أثناء إنشاء الملف:", err);
+        } else {
+            console.log("تم تحديث ملف getonline.json بنجاح!");
+        }
+    });
+}
+
+// استدعاء الوظيفة لإنشاء الملف لأول مرة
+syncDataToFile();
+
 
 // ================================================================
 // دوال مساعدة
