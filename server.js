@@ -475,7 +475,7 @@ io.on('connection', (socket) => {
 // تشغيل السيرفر
 // ================================================================
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 server.listen(PORT, HOST, () => {
