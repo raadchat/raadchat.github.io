@@ -22,6 +22,7 @@ var debugMode   = false;    // وضع التصحيح
 var isMobile    = false;    // هل جهاز موبايل
 var socketDisabled = false; // الوضع المنفصل (iframe)
 var isReconnecting = false; // هل يعيد الاتصال
+var isConnected    = false; // هل الاتصال قائم
 
 // متغيرات الغرف والمستخدمين
 var rcach       = {};  // cache الغرف { roomId: roomObj }
@@ -55,8 +56,6 @@ var peersMap      = {};    // اتصالات WebRTC { '_userId': PeerObj }
 var localStream   = null;  // البث الصوتي المحلي
 var audioContext  = null;  // سياق الصوت
 var mic           = [];    // قائمة مستخدمي المايك
-var minL          = 0;
-var minR          = 0;
 var playing       = null;  // الأغنية المشغلة حالياً
 var bitrate       = 24;    // جودة الصوت kbps
 var turn_server   = 1;     // نوع سيرفر TURN (1-6)
@@ -351,7 +350,7 @@ function reconnect(delay) {
     window.close();
     return;
   }
-  setTimeout('location.href="/"', delay || 3000);
+  setTimeout(function () { location.href = '/'; }, delay || 3000);
 }
 
 /**
@@ -438,6 +437,12 @@ function initSocket() {
     if (packet.cmd === 'nok') { authOk = false; authToken = null; }
     if (!isLoggedIn && authOk) authToken = packet.k;
 
+    // تعيين الغرفة الحالية وحالة تسجيل الدخول عند نجاح الدخول
+    if (packet.cmd === 'login' && packet.data && packet.data.msg === 1) {
+      isLoggedIn = true;
+      if (packet.data.r) myroom = packet.data.r;
+    }
+
     // تخزين مؤقت في وضع إعادة الاتصال
     if (isRcMode && !v490[packet.cmd]) {
       rcBuffer.push([packet.cmd, packet.data]);
@@ -505,8 +510,8 @@ function handleCmd(cmd, data) {
 
     case 'rcd':
       isRcMode = false;
-      rcBuffer  = [];
       var allCmds = data.concat(rcBuffer);
+      rcBuffer  = [];
       for (var i = 0; i < allCmds.length; i++) {
         handleCmd(allCmds[i][0], allCmds[i][1]);
       }
@@ -1147,7 +1152,7 @@ function joinRoom(roomId) {
 // ─────────────────────────────────────────────────────────────────────
 
 function buildUserRow(uid, user, isAdmin) {
-  if (v481 && v481[uid] !== null && v481[uid] !== undefined) return;
+  if (v486 && v486[uid] !== null && v486[uid] !== undefined) return;
   applyUserPic(user);
   // بناء عنصر المستخدم في القائمة
   var el = $($('#uhtml').html());
@@ -1172,7 +1177,7 @@ function openPmPanel(pmId, isNew) {
 
   var user = getUserById(pmId);
   var panel = $('<div class="pm-panel" id="c' + pmId + '">' +
-    '<div class="pm-header">' + (user ? user.name : pmId) + '</div>' +
+    '<div class="pm-header">' + (user ? user.topic : pmId) + '</div>' +
     '<div id="d2' + pmId + '" class="pm-msgs"></div>' +
     '<input class="tbox tbox' + pmId + '" placeholder="رسالة...">' +
     '<button onclick="sendPm(\'' + pmId + '\')">إرسال</button>' +
@@ -1206,9 +1211,9 @@ function sendMessage(tboxSelector) {
   if (msg === '%0A' || msg === '%0a' || msg === '' || msg === '\n') return;
 
   $('.ppop .reply').parent().remove();
-  emit('msg', {
+  emit('bc', {
     'msg': msg,
-    'mi': (replyId !== null && replyId.indexOf('.mi') !== -1)
+    'bid': (replyId !== null && replyId.indexOf('.mi') !== -1)
       ? replyId.replace('.mi', '')
       : undefined
   });
@@ -1284,7 +1289,7 @@ function handleP2PCmd(data) {
   var user = getUserById(data.id);
   if (user === null || user === undefined) return;
 
-  var peer = peersMap[data.dir !== 1 ? '_' + data.id : data.id];
+  var peer = peersMap[data.dir === 1 ? '_' + data.id : data.id];
 
   switch (data['t']) {
     case 'start':
@@ -1491,12 +1496,12 @@ function handleCallCmd(uid, type) {
       if (uid === myid || !var499.calls) return;
       activeCall = { uid: uid };
       callEl.show();
-      callEl.find('.caller-name').text(user ? user.name : uid);
+      callEl.find('.caller-name').text(user ? user.topic : uid);
       break;
 
     case 'calling':
       activeCall = { uid: uid };
-      callEl.show().find('.caller-name').text(user ? user.name : uid);
+      callEl.show().find('.caller-name').text(user ? user.topic : uid);
       break;
 
     case 'answer':
@@ -1542,6 +1547,8 @@ function rejectCall() {
 // تسجيل الدخول
 // ─────────────────────────────────────────────────────────────────────
 
+function login(mode) { handleLogin(mode); }
+
 function handleLogin(mode) {
   if (!isConnected) return;
   $('#tlogins button').attr('disabled', 'true');
@@ -1552,7 +1559,7 @@ function handleLogin(mode) {
   switch (mode) {
     case 1: // ضيف
       emit('g', {
-        'username': $('#u1').val(),
+        'u1': $('#u1').val(),
         'fp': navigator['n'],
         'refr': refr,
         'r': r
@@ -1563,9 +1570,9 @@ function handleLogin(mode) {
 
     case 2: // تسجيل دخول
       emit('login', {
-        'username': $('#u2').val(),
-        'stealth': $('#stealth').is(':checked'),
-        'password': $('#pass1').val(),
+        'u1': $('#u2').val(),
+        'pass1': $('#pass1').val(),
+        's': $('#stealth').is(':checked') ? 1 : 0,
         'fp': navigator['n'],
         'refr': refr,
         'r': r
@@ -1577,8 +1584,8 @@ function handleLogin(mode) {
 
     case 3: // تسجيل عضوية
       emit('reg', {
-        'username': $('#u3').val(),
-        'password': $('#pass2').val(),
+        'u1': $('#u3').val(),
+        'pass1': $('#pass2').val(),
         'fp': navigator['n'],
         'refr': refr,
         'r': r
@@ -1619,7 +1626,7 @@ function showNotification(data) {
   if (notUser !== null && notUser !== undefined) {
     if (isBlocked(notUser)) return;
     el.find('.not-pic').css('background-image', 'url("' + notUser.pic + '")');
-    el.find('.not-name').text(notUser.name);
+    el.find('.not-name').text(notUser.topic);
   }
 
   el.find('.not-msg').text(data.msg || '');
@@ -1896,10 +1903,10 @@ function upro(uid) {
   if (!user) { emit('upro', uid); return; }
 
   var modal = $('#upro');
-  modal.find('.u-name').text(user.name);
+  modal.find('.u-name').text(user.topic);
   modal.find('.u-pic').css('background-image', 'url("' + user.pic + '")');
-  modal.find('.u-topic').text(user.topic);
-  modal.find('.u-likes').text(user.likes || 0);
+  modal.find('.u-topic').text(user.msg || '');
+  modal.find('.u-likes').text(user.rep || 0);
   modal.attr('data-uid', uid);
   modal.modal('show');
 }
