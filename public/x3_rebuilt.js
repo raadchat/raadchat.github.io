@@ -10,80 +10,82 @@
 // ─────────────────────────────────────────────────────────────────────
 // المتغيرات العامة
 // ─────────────────────────────────────────────────────────────────────
-var myroom      = null;     // الغرفة الحالية
-var myid        = null;     // معرف المستخدم
-var authToken   = null;     // رمز المصادقة
-var roomToken   = '';       // رمز الغرفة
-var isLoggedIn  = false;    // هل سجل الدخول
-var socket      = null;     // اتصال Socket.IO
-var authOk      = false;    // هل تمت المصادقة
-var showOverlay = false;    // إظهار شاشة الانتظار
-var debugMode   = false;    // وضع التصحيح
-var isMobile    = false;    // هل جهاز موبايل
-var socketDisabled = false; // الوضع المنفصل (iframe)
-var isReconnecting = false; // هل يعيد الاتصال
-var isConnected    = false; // هل الاتصال قائم
+var myroom      = null;
+var myid        = null;
+var authToken   = null;
+var roomToken   = '';
+var isLoggedIn  = false;
+var socket      = null;
+var authOk      = false;
+var showOverlay = false;
+var debugMode   = false;
+var isMobile    = false;
+var socketDisabled = false;
+var isReconnecting = false;
+var isConnected    = false;
 
 // متغيرات الغرف والمستخدمين
-var rcach       = {};  // cache الغرف { roomId: roomObj }
-var v486        = {};  // cache المستخدمين { userId: userObj }
-var usersMap    = {};  // خريطة الايموجي { 'ف1': emoObj }
-var roomsList   = [];  // قائمة أيقونات الغرف
-var colorsList  = [];  // قائمة الألوان المخصصة
-var currentPower = []; // قائمة المحظورين محلياً
+var rcach       = {};
+var v486        = {};
+var usersMap    = {};
+var roomsList   = [];
+var colorsList  = [];
+var currentPower = [];
+
+// ✅ الإيموجي - كان ناقصاً
+var v480        = [];
 
 // متغيرات الرسائل
-var replyId    = null;  // معرف الرسالة المُرد عليها
-var bcc        = 0;     // عداد رسائل الحائط الجديدة
-var bct        = 100;   // حد الرسائل في العام
-var msgt       = 100;   // حد رسائل الخاص
-var minL       = 0;     // الحد الأدنى من الإعجابات للكتابة في العام
-var minR       = 0;     // الحد الأدنى من الإعجابات للتعليق
-var ncolors    = [];    // ألوان مستخدمة
-var cff        = '06';  // معرف التنسيق
+var replyId    = null;
+var bcc        = 0;
+var bct        = 100;
+var msgt       = 100;
+var minL       = 0;
+var minR       = 0;
+var ncolors    = [];
+var cff        = '06';
 
 // متغيرات الصلاحيات
-var v475       = {};    // صلاحيات المستخدم الحالي
-var v479       = [];    // قائمة الصلاحيات الكاملة
-var v490       = {      // أوامر لا تحتاج تسجيل دخول
+var v475       = {};
+var v479       = [];
+var v490       = {
   'ico+': true, 'ico-': true, 'powers': true, 'sico': true,
   'power': true, 'rlist': true, 'r+': true, 'r-': true,
   'r^': true, 'emos': true, 'dro3': true
 };
 
 // متغيرات الصوت والاتصال
-var peersMap      = {};    // اتصالات WebRTC { '_userId': PeerObj }
-var localStream   = null;  // البث الصوتي المحلي
-var audioContext  = null;  // سياق الصوت
-var mic           = [];    // قائمة مستخدمي المايك
-var playing       = null;  // الأغنية المشغلة حالياً
-var bitrate       = 24;    // جودة الصوت kbps
-var turn_server   = 1;     // نوع سيرفر TURN (1-6)
-var user_pic      = null;  // صورة المستخدم الافتراضية
-var room_pic      = null;  // صورة الغرفة الافتراضية
+var peersMap      = {};
+var localStream   = null;
+var audioContext  = null;
+var mic           = [];
+var playing       = null;
+var bitrate       = 24;
+var turn_server   = 1;
+var user_pic      = null;
+var room_pic      = null;
 var bcdown        = false;
 var showpics      = 100;
 var deepSearch    = 4;
 var uhSearch      = true;
-var nopm          = false; // تعطيل الرسائل الخاصة
-var nonot         = false; // تعطيل الإشعارات
+var nopm          = false;
+var nonot         = false;
 var noNotif       = false;
 var noPopup       = false;
 
 // متغيرات إعادة الاتصال
-var reconnectCount = 0;    // عداد محاولات إعادة الاتصال
-var isRcMode       = false; // وضع إعادة الاتصال
-var rcBuffer       = [];    // مخزن الأوامر خلال إعادة الاتصال
-var var499         = {};    // إعدادات الغرفة (calls, ...)
+var reconnectCount = 0;
+var isRcMode       = false;
+var rcBuffer       = [];
+var var499         = {};
 
 // متغيرات DOM
-var usea;          // حقل بحث المستخدمين
-var dpnl;          // لوحة التنقل
+var usea;
+var dpnl;
 var var530 = false;
 var v487   = true;
 var v1069  = false;
 
-// الوقت المرجعي
 window.cpi = new Date().getTime().toString(36);
 
 // ─────────────────────────────────────────────────────────────────────
