@@ -160,11 +160,16 @@ function makeBid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 5) + '00';
 }
 
-/** إرسال أمر مشفر لمقبس واحد
- *  extra: حقول إضافية تُضاف لـ packet الرئيسي (مثل k للـ authToken)
+/** إرسال أمر مشفر لمقبس واحد */
+function send(socket, cmd, data) {
+  socket.emit('msg', { cmd: decodeCmd(cmd), data });
+}
+
+/** إرسال أمر مع حقل k في الـ packet (للـ authToken في x3_final.js)
+ *  x3 يقرأ: if (!isLoggedIn && authOk) authToken = packet.k
  */
-function send(socket, cmd, data, extra = {}) {
-  socket.emit('msg', Object.assign({ cmd: decodeCmd(cmd), data }, extra));
+function sendAuth(socket, cmd, data, token) {
+  socket.emit('msg', { cmd: decodeCmd(cmd), data, k: token });
 }
 
 /** إرسال لجميع أعضاء الغرفة (مع استثناء اختياري) */
@@ -379,9 +384,11 @@ io.on('connection', socket => {
   // ── إعادة الاتصال بالرمز (rc2 لا يمر عبر 'msg') ────────────────────────
   socket.on('rc2', ({ token, n } = {}) => {
     // البحث عن مستخدم بنفس التوكن (اتصال منقطع)
+    // token = roomToken (= ttoken الذي أُرسِل في login response)
+    // n = authToken (= k من 'ok' packet)
     let found = false;
     for (const u of users.values()) {
-      if (u.token === token && u.socketId !== socket.id) {
+      if ((u.token === token || u.token === n) && u.socketId !== socket.id) {
         // نقل البيانات للمقبس الجديد
         const roomId = u.roomid;
         Object.assign(user, {
@@ -405,7 +412,8 @@ io.on('connection', socket => {
       }
     }
 
-    // إرسال البيانات الأساسية
+    // إرسال البيانات الأساسية — 'ok' أولاً لإعادة تفعيل authOk
+    sendAuth(socket, 'ok', null, user.token);
     send(socket, 'online',   []);
     send(socket, 'rlist',    [...rooms.values()].map(roomListItem));
     send(socket, 'emos',     []);
@@ -448,6 +456,8 @@ function dispatch(socket, user, cmd, data) {
     // ══════════════════════════════════════════════════════════════════════════
     case 'online': {
       user.token = genId();
+      // إرسال 'ok' أولاً حتى يُعيّن x3 authOk=true ويحفظ authToken
+      sendAuth(socket, 'ok', null, user.token);
       send(socket, 'server',   { online: io.engine.clientsCount });
       send(socket, 'rlist',    [...rooms.values()].map(roomListItem));
       send(socket, 'emos',     []);
@@ -472,8 +482,7 @@ function dispatch(socket, user, cmd, data) {
 
       const targetRoom = r ? rooms.get(r) : rooms.values().next().value;
 
-      // إرسال k في packet الرئيسي حتى يُخزّنه العميل كـ authToken
-      send(socket, 'ok',    null, { k: user.token });
+      send(socket, 'ok',    null);
       send(socket, 'login', {
         msg:    'ok',
         id:     user.id,
@@ -524,7 +533,7 @@ function dispatch(socket, user, cmd, data) {
 
       const targetRoom = r ? rooms.get(r) : rooms.values().next().value;
 
-      send(socket, 'ok',    null, { k: user.token });
+      send(socket, 'ok',    null);
       send(socket, 'login', {
         msg:    'ok',
         id:     user.id,
@@ -595,6 +604,8 @@ function dispatch(socket, user, cmd, data) {
     case 'rleave': {
       leaveRoom(socket, user);
       send(socket, 'rlist', [...rooms.values()].map(roomListItem));
+      // إشعار العميل بالخروج من الغرفة (ليس logout كامل)
+      send(socket, 'rleave', { ok: true });
       break;
     }
 
