@@ -160,9 +160,11 @@ function makeBid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 5) + '00';
 }
 
-/** إرسال أمر مشفر لمقبس واحد */
-function send(socket, cmd, data) {
-  socket.emit('msg', { cmd: decodeCmd(cmd), data });
+/** إرسال أمر مشفر لمقبس واحد
+ *  extra: حقول إضافية تُضاف لـ packet الرئيسي (مثل k للـ authToken)
+ */
+function send(socket, cmd, data, extra = {}) {
+  socket.emit('msg', Object.assign({ cmd: decodeCmd(cmd), data }, extra));
 }
 
 /** إرسال لجميع أعضاء الغرفة (مع استثناء اختياري) */
@@ -470,7 +472,8 @@ function dispatch(socket, user, cmd, data) {
 
       const targetRoom = r ? rooms.get(r) : rooms.values().next().value;
 
-      send(socket, 'ok',    null);
+      // إرسال k في packet الرئيسي حتى يُخزّنه العميل كـ authToken
+      send(socket, 'ok',    null, { k: user.token });
       send(socket, 'login', {
         msg:    'ok',
         id:     user.id,
@@ -521,7 +524,7 @@ function dispatch(socket, user, cmd, data) {
 
       const targetRoom = r ? rooms.get(r) : rooms.values().next().value;
 
-      send(socket, 'ok',    null);
+      send(socket, 'ok',    null, { k: user.token });
       send(socket, 'login', {
         msg:    'ok',
         id:     user.id,
