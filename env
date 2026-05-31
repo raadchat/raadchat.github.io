@@ -1,0 +1,14 @@
+# منفذ السيرفر
+PORT=5000
+
+# مفتاح الأدمن لـ REST API
+ADMIN_KEY=your_secret_key_here
+
+# عدد خانات المايك في كل غرفة
+MAX_MIC_SLOTS=5
+
+# أقصى عدد رسائل الحائط المحفوظة
+MAX_WALL_MSGS=200
+
+# وضع التصحيح (true/false)
+DEBUG=false
