@@ -4,6 +4,26 @@
    يضيف كل الدوال المفقودة ويصلح التوافق الكامل
    ============================================================= */
 
+
+// ─── منع حذف .dad (صفحة الدخول) — تحويل remove() إلى hide() ────────────
+// x3_final.js يفعل $('.dad').remove() عند login
+// نُبدّله بـ hide() حتى تعود صفحة الدخول عند الخروج
+(function($) {
+  var origRemove = $.fn.remove;
+  $.fn.remove = function(selector) {
+    if (this.hasClass('dad') || this.is('.dad')) {
+      this.hide();
+      return this;
+    }
+    // لو كان selector يستهدف .dad فقط
+    if (!selector && this.filter('.dad').length === this.length) {
+      this.hide();
+      return this;
+    }
+    return origRemove.apply(this, arguments);
+  };
+})(jQuery);
+
 // ─── 1. إصلاح أسماء دوال تسجيل الدخول ──────────────────────────────
 // الـ HTML يستدعي login(n) لكن x3_final يحتوي handleLogin(n)
 function login(mode) {
@@ -412,17 +432,35 @@ var _origLogin = handleCmd;
 handleCmd = function(cmd, data) {
   _origLogin(cmd, data);
   if (cmd === 'login' && data && data.msg === 'ok') {
-    // إخفاء صفحة الدخول وإظهار الغرفة
-    $('#tlogins').hide();
-    $('#room').css('display', 'flex');
+    // إخفاء .dad وإظهار الغرفة
+    // ملاحظة: x3_final يُخفي .dad بـ remove() — نحن حوّلناها لـ hide()
+    setTimeout(function() {
+      $('.dad').hide();
+      $('#room').css({ display: 'flex', height: '100%' });
+      $('#d2,.footer,#d0').show();
+      fixSize();
+    }, 50);
     isLoggedIn = true;
   }
   if (cmd === 'kick') {
     // طرد → إعادة لصفحة الدخول
     $('#room').hide();
+    $('.dad').show();
     $('#tlogins').show();
     isLoggedIn = false;
     myid = null;
+    authToken = null;
+    // إعادة تفعيل أزرار الدخول
+    $('#tlogins button').removeAttr('disabled');
+  }
+  if (cmd === 'rleave') {
+    // مغادرة الغرفة → إظهار قائمة الغرف أو صفحة الدخول
+    // البقاء في الواجهة مع إظهار قائمة الغرف
+    if (v484) {
+      // إظهار panel الغرف
+      $('#dpnl').show();
+      $('[data-target="#rooms"]').trigger('click');
+    }
   }
 };
 
@@ -556,17 +594,28 @@ $(function() {
     if (cmd === 'rcd') {
       v484 = myroom;
       v483 = $('#room');
+      // إظهار واجهة الغرفة
+      $('.dad').hide();
+      $('#room').css({ display: 'flex', height: '100%' });
+      $('#d2,.footer,#d0').show();
       fixSize();
     }
   };
 });
 
 // ─── 29. تحديث myroom من السيرفر ─────────────────────────────────────
+// myroom يُحدَّث في rcd handler (بعد دخول الغرفة)
 var _setMyRoom = handleCmd;
 handleCmd = function(cmd, data) {
   _setMyRoom(cmd, data);
   if (cmd === 'login' && data && data.msg === 'ok' && data.r) {
     myroom = data.r;
+  }
+  if (cmd === 'rc') {
+    // بداية تحميل الغرفة — احتمال تحديث myroom
+    if (myroom) {
+      $('#room').css({ display: 'flex', height: '100%' });
+    }
   }
 };
 
