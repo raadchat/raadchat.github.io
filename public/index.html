@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" style="height:100%">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta property="og:title" content="شات قلوب">
+<meta property="og:image" content="prv1.png">
+<meta name="google" value="notranslate">
+<meta name="HandheldFriendly" content="True">
+<meta name="viewport" content="user-scalable=0, width=400, interactive-widget=resizes-content">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>شات قلوب</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+
+<!-- ════════════════════════════════════════════
+     الخطوط وأيقونات FontAwesome
+════════════════════════════════════════════ -->
+<style>
+@font-face {
+  font-family:'FontAwesome';
+  src:url('fonts/fontawesome-webfont.woff2?v=4.5.0') format('woff2'),
+      url('fonts/fontawesome-webfont.woff?v=4.5.0') format('woff'),
+      url('fonts/fontawesome-webfont.ttf?v=4.5.0') format('truetype');
+  font-weight:normal; font-style:normal;
+}
+@font-face {
+  font-family:"Open Sans Regular";
+  font-style:normal;
+  src:url("fonts/OpenSans-Regular.woff2") format("woff2");
+  font-weight:400; font-display:swap;
+}
+.fa{display:inline-block;font:normal normal normal 14px/1 FontAwesome;text-rendering:auto;-webkit-font-smoothing:antialiased;}
+.fa-phone:before{content:"\f095"}.fa-key:before{content:"\f084"}.fa-eye:before{content:"\f06e"}
+.fa-search:before{content:"\f002"}.fa-envelope-o:before{content:"\f003"}.fa-heart:before{content:"\f004"}
+.fa-star:before{content:"\f005"}.fa-user:before{content:"\f007"}.fa-check:before{content:"\f00c"}
+.fa-times:before{content:"\f00d"}.fa-cog:before,.fa-gear:before{content:"\f013"}.fa-home:before{content:"\f015"}
+.fa-refresh:before{content:"\f021"}.fa-volume-up:before{content:"\f028"}.fa-image:before,.fa-photo:before{content:"\f03e"}
+.fa-edit:before,.fa-pencil-square-o:before{content:"\f044"}.fa-plus:before{content:"\f067"}.fa-minus:before{content:"\f068"}
+.fa-ban:before{content:"\f05e"}.fa-expand:before{content:"\f065"}.fa-compress:before{content:"\f066"}
+.fa-exclamation-triangle:before,.fa-warning:before{content:"\f071"}.fa-comment:before{content:"\f075"}
+.fa-comments:before{content:"\f086"}.fa-heart-o:before{content:"\f08a"}.fa-sign-out:before{content:"\f08b"}
+.fa-users:before,.fa-group:before{content:"\f0c0"}.fa-save:before,.fa-floppy-o:before{content:"\f0c7"}
+.fa-comment-o:before{content:"\f0e5"}.fa-comments-o:before{content:"\f0e6"}.fa-info:before{content:"\f129"}
+.fa-microphone:before{content:"\f130"}.fa-microphone-slash:before{content:"\f131"}
+.fa-plus-circle:before{content:"\f055"}.fa-minus-circle:before{content:"\f056"}.fa-times-circle:before{content:"\f057"}
+.fa-check-circle:before{content:"\f058"}.fa-info-circle:before{content:"\f05a"}
+.fa-arrow-left:before{content:"\f060"}.fa-arrow-right:before{content:"\f061"}
+.fa-send:before,.fa-paper-plane:before{content:"\f1d8"}.fa-share-alt:before{content:"\f1e0"}
+.fa-diamond:before{content:"\f219"}.fa-user-secret:before{content:"\f21b"}.fa-heartbeat:before{content:"\f21e"}
+.fa-user-plus:before{content:"\f234"}.fa-user-times:before{content:"\f235"}
+.fa-commenting:before{content:"\f27a"}.fa-commenting-o:before{content:"\f27b"}
+.fa-close:before,.fa-remove:before{content:"\f00d"}.fa-star-o:before{content:"\f006"}
+.fa-check-square-o:before{content:"\f046"}.fa-minus-square:before{content:"\f146"}
+.fa-plus-square:before{content:"\f0fe"}.fa-university:before{content:"\f19c"}
+.fa-graduation-cap:before{content:"\f19d"}.fa-youtube-play:before{content:"\f16a"}
+.fa-cogs:before,.fa-gears:before{content:"\f085"}.fa-user-md:before{content:"\f0f0"}
+</style>
+
+<!-- ════════════════════════════════════════════
+     Bootstrap مضمّن (أساسيات فقط)
+════════════════════════════════════════════ -->
+<style>
+html{font-size:10px;-webkit-tap-highlight-color:transparent}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#fff;margin:0}
+*{-webkit-box-sizing:border-box;box-sizing:border-box}
+a{color:#337ab7;text-decoration:none}a:hover,a:focus{color:#23527c;text-decoration:underline}
+img{vertical-align:middle;border:0}
+button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit;margin:0;color:inherit}
+button{overflow:visible;cursor:pointer}
+textarea{overflow:auto}
+.btn{display:inline-block;margin-bottom:0;font-weight:normal;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;background-image:none;border:1px solid transparent;padding:6px 12px;font-size:14px;line-height:1.42857143;border-radius:4px;-webkit-user-select:none;user-select:none}
+.btn:focus,.btn:hover{color:#333;text-decoration:none}
+.btn-default{color:#333;background-color:#fff;border-color:#ccc}
+.btn-default:hover{background-color:#e6e6e6;border-color:#adadad}
+.btn-primary{color:#fff;background-color:#337ab7;border-color:#2e6da4}
+.btn-primary:hover{background-color:#286090;border-color:#204d74}
+.btn-success{color:#fff;background-color:#5cb85c;border-color:#4cae4c}
+.btn-success:hover{background-color:#449d44}
+.btn-info{color:#fff;background-color:#5bc0de;border-color:#46b8da}
+.btn-info:hover{background-color:#31b0d5}
+.btn-warning{color:#fff;background-color:#f0ad4e;border-color:#eea236}
+.btn-warning:hover{background-color:#ec971f}
+.btn-danger{color:#fff;background-color:#d9534f;border-color:#d43f3a}
+.btn-danger:hover{background-color:#c9302c}
+.btn[disabled]{cursor:not-allowed;opacity:.65}
+.btn-xs{padding:1px 5px;font-size:12px;line-height:1.5;border-radius:3px}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:3px}
+.btn-block{display:block;width:100%}
+.label{display:inline;padding:.2em .6em .3em;font-size:75%;font-weight:700;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:.25em}
+.label-default{background-color:#777}
+.label-primary{background-color:#337ab7}
+.label-success{background-color:#5cb85c}
+.label-info{background-color:#5bc0de}
+.label-warning{background-color:#f0ad4e}
+.label-danger{background-color:#d9534f}
+.badge{display:inline-block;min-width:10px;padding:3px 7px;font-size:12px;font-weight:bold;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:middle;background-color:#777;border-radius:10px}
+.badge:empty{display:none}
+.form-control{display:block;width:100%;height:34px;padding:6px 12px;font-size:14px;line-height:1.42857143;color:#555;background-color:#fff;border:1px solid #ccc;border-radius:4px}
+.form-control:focus{border-color:#66afe9;outline:0}
+.nav{padding-left:0;margin-bottom:0;list-style:none}
+.nav>li{position:relative;display:block}
+.nav>li>a{position:relative;display:block;padding:10px 15px}
+.nav>li>a:hover,.nav>li>a:focus{text-decoration:none;background-color:#eee}
+.nav-tabs{border-bottom:1px solid #ddd}
+.nav-tabs>li{float:left;margin-bottom:-1px}
+.nav-tabs>li>a{margin-right:2px;line-height:1.42857143;border:1px solid transparent;border-radius:4px 4px 0 0}
+.nav-tabs>li.active>a,.nav-tabs>li.active>a:hover{color:#555;cursor:default;background-color:#fff;border:1px solid #ddd;border-bottom-color:transparent}
+.tab-content>.tab-pane{display:none}
+.tab-content>.active{display:block}
+.modal{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1050;display:none;overflow:hidden;outline:0}
+.modal.fade .modal-dialog{-webkit-transform:translate(0,-25%);transform:translate(0,-25%);-webkit-transition:-webkit-transform .3s ease-out;transition:transform .3s ease-out}
+.modal.in .modal-dialog{-webkit-transform:translate(0,0);transform:translate(0,0)}
+.modal-open .modal{overflow-x:hidden;overflow-y:auto}
+.modal-dialog{position:relative;width:auto;margin:10px}
+.modal-content{position:relative;background-color:#fff;border:1px solid rgba(0,0,0,.2);border-radius:6px;-webkit-box-shadow:0 3px 9px rgba(0,0,0,.5);box-shadow:0 3px 9px rgba(0,0,0,.5);outline:0}
+.modal-backdrop{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1040;background-color:#000}
+.modal-backdrop.fade{opacity:0}
+.modal-backdrop.in{opacity:.5}
+.modal-header{padding:15px;border-bottom:1px solid #e5e5e5}
+.modal-body{position:relative;padding:15px}
+.modal-footer{padding:15px;text-align:right;border-top:1px solid #e5e5e5}
+.close{float:right;font-size:21px;font-weight:bold;line-height:1;color:#000;opacity:.2;cursor:pointer;background:transparent;border:0;padding:0}
+.close:hover{opacity:.5}
+.panel{margin-bottom:20px;background-color:#fff;border:1px solid transparent;border-radius:4px}
+.panel-body{padding:15px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:8px;border:1px solid #ddd}
+.table-bordered{border:1px solid #ddd}
+.table-hover tbody tr:hover{background-color:#f5f5f5}
+.pull-right{float:right!important}
+.pull-left{float:left!important}
+.hide{display:none!important}
+.show{display:block!important}
+.clearfix:after{display:table;content:" ";clear:both}
+@media(min-width:768px){.modal-dialog{width:600px;margin:30px auto}}
+</style>
+
+<!-- ════════════════════════════════════════════
+     أنماط خاصة بالتطبيق
+════════════════════════════════════════════ -->
+<style>
+*{font-family:serif;font-weight:700;font-size:15.2px!important;line-height:1.4!important;text-shadow:none!important}
+.u-msg{line-height:1.5!important}
+html,body{height:100%;overflow:hidden;margin:0;padding:0}
+html{width:100vw}
+body{background-color:#40404f}
+
+/* الألوان الأساسية */
+.bg{background-color:#962C3E}
+.bgg{background-color:lightslategray}
+.light{background-color:#FAFAFA}
+.label-primary,.btn-primary,.bg-primary{background-color:#7D2E31!important;background-image:none!important}
+.label,.btn{border-radius:1px}
+.pmsgc{background-color:rgba(0,77,255,.08)!important}
+.ppmsgc{background-color:#f1f1ff!important}
+.hmsg{background-color:linen!important}
+#mic .mic,#muteall{background-color:#7D2E31}
+#d2,#rooms,#users{background-color:#fafafa!important}
+
+/* تخطيط */
+.fr{float:right}.fl{float:left}
+.d-flex{display:flex}
+.c-flex{display:flex;flex-direction:column}
+.flex-fill{flex:1 1 auto!important}
+.flex-grow-1{flex-grow:1!important}
+.dots{display:inline-block;white-space:nowrap;overflow:hidden!important;text-overflow:ellipsis;max-width:100%}
+.break{overflow:auto;word-wrap:break-word;overflow-x:hidden;overflow-wrap:break-word}
+.center{margin:0 auto}
+.nosel,.u-ico,.u-pic,.tago{-webkit-user-select:none;user-select:none;cursor:default}
+.hand{cursor:pointer}
+.hid{display:none}
+.border{border:1px solid black}
+.borderg{border:1px solid #f4f4f4}
+.corner{border-radius:5px}
+.mini{font-size:90%!important}
+.minix{font-size:80%!important}
+.noflow{overflow:hidden}
+
+/* صندوق النص */
+.tbox{overflow:hidden;border-radius:2px;border:1px solid lightgrey;padding:6px;max-height:32px;min-height:32px;height:32px;resize:none}
+
+/* المايك */
+.mic{width:53px;height:50px;margin:1px;border-radius:4px;background-image:url(imgs/mic.png);background-size:cover;background-repeat:no-repeat;background-position:center}
+
+/* صور */
+.fitimg{background-size:contain;background-repeat:no-repeat;background-position:50% 50%}
+.uzr .fitimg,.room .fitimg{background-size:cover}
+.object-fit{object-fit:contain;object-position:center right}
+.emoi{max-width:240px;max-height:20px}
+.u-ico{margin-top:1px;max-height:18px;object-fit:scale-down}
+.unread{background-color:#ffc89d!important}
+.d2{padding-bottom:2px}
+
+/* لوحة التحكم */
+#cp .tab-content .tab-pane{min-width:400px!important}
+.tab-pane{padding:0;width:100%}
+.modal-header{padding:5px}
+.badge{padding:0 3px}
+button.btn{padding:5px}
+.popover-content{padding:1px}
+.bgf{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+@supports not ((-webkit-backdrop-filter:none) or (backdrop-filter:none)){.bgf{background-color:rgba(0,0,0,.5)}}
+
+/* جداول */
+table{border-collapse:collapse;border-spacing:0}
+td{border:1px solid grey;font-weight:bold;overflow-y:hidden!important}
+th{background-color:cornflowerblue;color:white;padding:5px}
+
+/* مؤشر الكتابة */
+.typingIndicatorBubbleDot{width:4px;height:4px;margin-right:4px;background-color:#57585a;border-radius:50%;animation:bounce 1.3s linear infinite}
+.typingIndicatorBubbleDot:first-of-type{margin:0 4px}
+.typingIndicatorBubbleDot:nth-of-type(2){animation-delay:.15s}
+.typingIndicatorBubbleDot:nth-of-type(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+
+/* كروت المستخدمين */
+.uhtml{text-align:left;width:100%;margin:0!important;border-bottom:1px solid lavender;padding-right:1px;background-color:#fafafa}
+.uhtml .u-pic{min-width:52px;width:52px;min-height:48px;max-height:62px;background-color:#f3f3f3;margin-top:1px}
+.uhtml .co.ico{width:18px;height:18px;border-radius:1px;margin-top:-2px;margin-left:1px}
+
+/* أزرار الشريط السفلي */
+.ae{border:1px solid black!important;border-radius:2px!important;float:left;text-align:center;width:20%;max-width:80px;padding:4px 0;margin:1px;margin-bottom:2px}
+
+/* منطقة القص الخاصة بـ nav-pills */
+.nav-pills li a{border-radius:0!important}
+.pgr{-webkit-appearance:none;-moz-appearance:none;appearance:none}
+.tc{border-radius:3px!important}
+.tablebox{flex:0 0 auto}
+</style>
+</head>
+
+<!-- ════════════════════════════════════════════
+     الجسم
+════════════════════════════════════════════ -->
+<body class="bg" style="background-color:#40404f;height:100%;max-height:100%;min-height:100%;margin:0;padding:0;overflow:hidden">
+
+<!-- ══════════════════════════════════════════════════════════════════
+     صفحة تسجيل الدخول (.dad) - تُخفى بعد النجاح
+══════════════════════════════════════════════════════════════════ -->
+<div style="width:100%;height:100%;max-height:100%;max-width:394px;padding:0" class="center-block bg dad">
+  <div id="tlogins" class="border light fr break c-flex" style="z-index:1000;margin-left:-4px;height:100%;width:100%;max-width:390px;min-height:100%">
+
+    <!-- شريط العنوان -->
+    <div style="width:100%;display:block">
+      <a href="/" class="label bg d-flex fl" style="width:100%;padding:6px;border-radius:0;text-align:left">
+        <img src="prv1.png" alt="" class="fl" style="margin-right:2px;width:24px;height:24px">
+        <span class="flex-grow-1 dots">شات قلوب</span>
+        <span class="btn fr btn-success fa fa-refresh" style="margin:0;margin-top:-2px;width:39px" onclick="location.reload()"></span>
+      </a>
+
+      <!-- روابط خارجية -->
+      <a href="https://kuwait666.net" style="width:90px;margin:2px" class="fl fa fa-phone btn btn-warning">شات كويت 666</a>
+      <a href="#" style="width:90px;margin:2px" class="fl fa fa-heartbeat btn btn-danger">التطبيق</a>
+      <a href="#" style="width:90px;margin:2px" class="fl fa fa-star btn btn-success">شات قلوب</a>
+      <a href="#" style="width:90px;margin:2px" class="fl fa fa-graduation-cap btn btn-info">القوانين</a>
+
+      <!-- تبويبات الدخول -->
+      <ul class="nav nav-tabs fl" style="margin:0;background-color:white;height:44px;width:100%">
+        <li><a data-toggle="tab" style="padding:10px 6px" class="fa fa-user" href="#l1">دخول الزوار</a></li>
+        <li class="active"><a data-toggle="tab" style="padding:10px 6px" class="fa fa-user" href="#l2">دخول الاعضاء</a></li>
+        <li><a data-toggle="tab" style="padding:10px 6px" class="fa fa-user-plus" href="#l3">تسجيل عضويه</a></li>
+      </ul>
+
+      <!-- محتوى التبويبات -->
+      <div style="width:100%;height:74px" class="tab-content fl">
+
+        <!-- دخول ضيف -->
+        <div id="l1" style="padding:4px;width:100%" class="tab-pane">
+          <input style="width:206px;margin-top:33px;padding:5px;border-radius:2px;height:33px"
+                 autocomplete="off" type="search" class="border corner" id="u1" placeholder="أكتب الاسم المستعار">
+          <button style="margin-top:1px" id="btn-guest" aria-label="enter" class="btn btn-primary">دخول</button>
+        </div>
+
+        <!-- دخول عضو -->
+        <div id="l2" style="padding:4px;width:100%" class="tab-pane active">
+          <input style="width:206px;padding:5px;border-radius:2px;height:33px" id="u2" class="border corner" placeholder="اكتب اسم العضو">
+          <input style="width:206px;padding:5px;border-radius:2px;height:33px" id="pass1" class="border corner" type="password" placeholder="اكتب كلمه المرور">
+          <button id="btn-login" class="btn btn-primary">دخول</button>
+          <span onclick="$(this).toggleClass('label-info');$('#stealth').prop('checked',$(this).hasClass('label-info'));"
+                style="color:black;padding:4px;margin:2px;border-radius:4px" class="btn fr fa fa-eye"></span>
+          <input style="display:none" id="stealth" type="checkbox" value="">
+        </div>
+
+        <!-- تسجيل عضوية -->
+        <div id="l3" style="padding:4px;width:100%" class="tab-pane">
+          <input style="width:206px;padding:5px;border-radius:2px;height:33px" id="u3" class="border corner" placeholder="اكتب اسم العضو">
+          <input style="width:206px;padding:5px;border-radius:2px;height:33px" id="pass2" class="border corner" type="password" placeholder="اكتب كلمه المرور">
+          <button id="btn-reg" class="btn btn-primary">دخول</button>
+        </div>
+      </div>
+
+      <!-- شريط الحالة -->
+      <div class="bg mini fl" style="width:100%;border-radius:0;padding:0;height:25px">
+        <a href="/" title="شات قلوب" class="fr btn btn-info">شات قلوب</a>
+        <label id="loginstat" class="fl label loginstat label-success" style="border-radius:1px;margin:0;height:25px;min-width:120px">يتصل...</label>
+        <span id="s1" class="s1 fr fa fa-user label label-success" style="border-radius:0;min-width:38px;height:25px">0</span>
+      </div>
+    </div>
+
+    <!-- قائمة المتصلين في صفحة الدخول -->
+    <div id="lonline" class="lonline light break flex-grow-1" style="width:100%;outline:lightgray solid 1px;padding-left:1px;background-color:#fafafa"></div>
+
+    <div class="fr borderg minix" style="padding:2px;background-color:white;z-index:1;color:lightslategrey;height:22px">
+      Copyright © 2021 <a title="Jawalhost.com" class="mini" href="https://jawalhost.com/">جوال هوست</a>. All Rights Reserved
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     منطقة الغرفة (تظهر بعد الدخول)
+══════════════════════════════════════════════════════════════════ -->
+<div id="room" style="height:100%;width:100%;display:none" class="break c-flex fr">
+
+  <!-- منطقة المايكات -->
+  <div id="mic" style="width:100%;border:none;padding:2px;height:54px;display:none" class="nosel bg">
+    <div id="muteall" onclick="muteAll()" style="margin-right:2px;width:48px;height:50px;color:black;background-color:mediumseagreen" class="bg corner fl border">
+      <span style="margin-left:10%;font-size:38px!important;margin-top:-2px" class="fa fa-volume-up"></span>
+    </div>
+    <!-- المايك 0-4 -->
+    <div id="mic0" i="0" class="fl mic dots border corner bg"><div class="u" style="display:flex;width:100%;background:rgba(222,222,222,.5);margin-top:26px"><img class="object-fit" style="min-height:14px;max-height:20px;max-width:64px"><span></span></div></div>
+    <div id="mic1" i="1" class="fl mic dots border corner bg"><div class="u" style="display:flex;width:100%;background:rgba(222,222,222,.5);margin-top:26px"><img class="object-fit" style="min-height:14px;max-height:20px;max-width:64px"><span></span></div></div>
+    <div id="mic2" i="2" class="fl mic dots border corner bg"><div class="u" style="display:flex;width:100%;background:rgba(222,222,222,.5);margin-top:26px"><img class="object-fit" style="min-height:14px;max-height:20px;max-width:64px"><span></span></div></div>
+    <div id="mic3" i="3" class="fl mic dots border corner bg"><div class="u" style="display:flex;width:100%;background:rgba(222,222,222,.5);margin-top:26px"><img class="object-fit" style="min-height:14px;max-height:20px;max-width:64px"><span></span></div></div>
+    <div id="mic4" i="4" class="fl mic dots border corner bg"><div class="u" style="display:flex;width:100%;background:rgba(222,222,222,.5);margin-top:26px"><img class="object-fit" style="min-height:14px;max-height:20px;max-width:64px"><span></span></div></div>
+  </div>
+
+  <!-- منطقة الرسائل العامة -->
+  <div id="d2" class="d2 flex-grow-1 light break" style="overflow-y:auto"></div>
+
+  <!-- شريط الإرسال السفلي -->
+  <div class="tablebox d-flex footer fl light" style="width:100%;height:42px;padding:4px">
+    <button onclick="emit('rleave',{})" style="margin-left:-2px;margin-top:2px;border-radius:2px" class="fa fa-sign-out fl btn btn-primary">&nbsp;</button>
+    <img role="button" class="fl nosel emobox" style="padding:5px;width:34px;height:34px" dsrc="imgs/emoii.gif" onclick="showEmojiBox()">
+    <textarea id="tbox" onclick="setTimeout(function(){$('#d2').scrollTop($('#d2')[0].scrollHeight);},600)"
+              placeholder="اكتب رسالتك هنا" class="fl tbox flex-fill" style="background-color:rgb(170,170,175)"></textarea>
+    <button id="btn-send" style="margin-left:2px" class="fa fa-send fl btn btn-primary">إرسال</button>
+  </div>
+
+  <!-- شريط الأزرار السفلي -->
+  <div id="d0" class="nosel fl bg" style="padding-left:1px;margin-top:1px;width:100%">
+
+    <!-- المتواجدين -->
+    <button title="المتواجدين" onclick="openPanel('users','المتواجدين')"
+            data-target="#users" class="ae fa fa-user label label-primary">
+      <span id="busers" style="padding:1px 4px"></span>
+    </button>
+
+    <!-- المحادثات الخاصة -->
+    <button title="المحادثات الخاصه" onclick="openPanel('chats','المحادثات الخاصه');hl('#pmb','primary')"
+            data-target="#chats" id="pmb" class="ae fa fa-comment label label-primary" style="width:21%">
+      <span style="padding:1px 4px"></span>خاص
+    </button>
+
+    <!-- الغرف -->
+    <button title="غرف الدردشه" id="brooms" onclick="openPanel('rooms','غرف الدردشه')"
+            data-target="#rooms" class="ae fa fa-users label label-primary" style="width:19%">
+      <span style="padding:1px 4px"></span>الغرف
+    </button>
+
+    <!-- الحائط -->
+    <button title="الحائط" onclick="openPanel('wall','الحائط');bcc=0;$(this).css('color','').find('#bwall').text('')"
+            data-target="#wall" class="ae fa fa-commenting label label-primary">
+      <span id="bwall" style="padding:1px 4px"></span>الحائط
+    </button>
+
+    <!-- الإعدادات -->
+    <button title="الإعدادات" onclick="openPanel('settings','الإعدادات')"
+            data-target="#settings" class="ae fa fa-gear label label-primary" style="width:18%">
+      <span style="padding:1px 4px"></span>الضبط
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     لوحة dpnl (تنزلق من الجانب)
+══════════════════════════════════════════════════════════════════ -->
+<div id="dpnl" class="dpnl bg" style="display:none;position:fixed;top:0;right:0;bottom:0;border:1px solid;max-width:340px;min-width:300px;z-index:500;overflow:hidden;display:flex;flex-direction:column">
+
+  <!-- رأس اللوحة -->
+  <div style="width:100%;flex:0 0 auto">
+    <label onclick="$('#dpnl').hide()" class="label label-danger border nosel fa fa-close fr"
+           style="margin-bottom:0;margin-right:2px;border:1px solid black;border-radius:6px;padding:6px 8px">&nbsp;</label>
+    <label class="fl nosel label pnhead" style="margin:3px;padding-left:10px;padding-right:10px">المتواجدين</label>
+  </div>
+
+  <!-- محتوى اللوحة (tab-content) -->
+  <div class="flex-grow-1" style="overflow:hidden;position:relative">
+
+    <!-- تبويب: المتواجدون -->
+    <div id="pnl-users" class="pnl-tab" style="height:100%;display:flex;flex-direction:column">
+      <textarea type="search" id="usearch" placeholder=".. البحث" class="tbox bg border"
+                style="width:100%;padding-left:5px;display:block;border-radius:0;flex:0 0 auto"></textarea>
+      <div id="users" class="light break flex-grow-1" style="overflow-y:auto"></div>
+    </div>
+
+    <!-- تبويب: المحادثات الخاصة -->
+    <div id="pnl-chats" class="pnl-tab" style="height:100%;display:none;overflow-y:auto">
+      <div id="chats" class="break light" style="height:100%"></div>
+    </div>
+
+    <!-- تبويب: الغرف -->
+    <div id="pnl-rooms" class="pnl-tab" style="height:100%;display:none;flex-direction:column">
+      <div style="width:100%;margin:0;border:none;border-radius:0" class="nosel label-primary fl bgg">
+        <button onclick="mkr()" class="border btn label label-success fl fa fa-plus" style="margin:1px">غرفه جديدة</button>
+      </div>
+      <div id="rooms" class="light break flex-grow-1" style="overflow-y:auto"></div>
+    </div>
+
+    <!-- تبويب: الحائط -->
+    <div id="wall" class="pnl-tab" style="height:100%;display:none;flex-direction:column">
+      <div id="d2bc" class="d2 light flex-grow-1 break" style="width:100%;padding-top:1px;overflow-y:auto">
+        <button class="fa fa-comments btn border btn-info" onclick="$(this).parent().scrollTop(0);$(this).hide()"
+                style="display:none;position:absolute;top:32px;z-index:1;left:50px;width:70%;text-align:center" id="bcmore">رسائل جديدة</button>
+      </div>
+      <div class="tablebox light d-flex" style="width:100%;height:42px;padding:4px;flex:0 0 auto">
+        <button onclick="sendBc(true)" style="margin-left:2px;margin-right:3px;margin-top:2px;border-radius:2px" class="fr fa fa-share-alt fl btn btn-primary"></button>
+        <img role="button" class="fl emobox" style="padding:5px;width:34px;height:34px" dsrc="imgs/emoii.gif" onclick="showEmojiBox()">
+        <textarea placeholder="اكتب رسالتك هنا" class="fl tbox tboxbc flex-fill"></textarea>
+        <button onclick="sendBc()" style="margin-left:2px" class="fa fa-send sndbc fl btn btn-primary">إرسال</button>
+      </div>
+    </div>
+
+    <!-- تبويب: الإعدادات -->
+    <div id="pnl-settings" class="pnl-tab" style="height:100%;display:none;overflow-y:auto">
+      <div class="borderg corner" style="background-color:white;width:100%;margin-top:-2px">
+        <div style="display:inline-block;width:132px;margin-top:2px;height:25px;padding:1px" class="label label-primary">الزخرفه</div><br>
+        <input class="stopic dots" style="width:99%"><br>
+        <div style="display:inline-block;width:132px;margin-top:1px;height:25px;padding:1px" class="label label-primary">الحاله</div><br>
+        <input class="smsg dots" style="width:99%"><br>
+        <div class="label label-primary" style="display:inline-block;width:132px;margin-top:1px;height:25px;padding:1px">لون الإسم</div>
+        <div class="cpick border scolor btn" style="width:64px;height:22px;color:#000;background-color:#fff"></div><br>
+        <div class="label label-primary" style="display:inline-block;width:132px;margin-top:1px;height:25px;padding:1px">لون الخط</div>
+        <div class="cpick border mcolor btn" style="width:64px;height:22px;color:#000;background-color:#fff"></div><br>
+        <div class="label label-primary" style="display:inline-block;width:132px;margin-top:1px;height:25px;padding:1px">لون الخلفيه</div>
+        <div class="cpick border sbg btn" style="width:64px;height:22px;color:#000;background-color:#fff"></div>
+        <button class="border btn mini btn-success hand fl" style="padding:6px;width:98%;margin-left:3px;margin-top:2px;margin-bottom:4px" onclick="setprofile()">
+          <span class="fl fa fa-edit"></span>حـفـظ
+        </button>
+      </div>
+
+      <!-- خيارات الصوت والحجم -->
+      <select id="zoom" style="width:98%;margin:2px 4px" class="fl btn btn-primary"
+              onchange="document.body.style.zoom=$(this).val();getCookie('zoom',$(this).val())">
+        <option value="1">%100 - حجم الخطوط</option>
+        <option value="1.20">%120 - حجم الخطوط</option>
+        <option value="1.10">%110 - حجم الخطوط</option>
+        <option value="1.05">%105 - حجم الخطوط</option>
+        <option value="0.95">%95 - حجم الخطوط</option>
+        <option value="0.9">%90 - حجم الخطوط</option>
+      </select>
+      <select id="turn_server_sel" style="width:98%;margin:2px 4px" class="fl btn btn-primary"
+              onchange="turn_server=parseInt($(this).val());getCookie('turn_server',$(this).val())">
+        <option value="1">السيرفر الصوتي: الاساسي</option>
+        <option value="2">السيرفر الصوتي: TCP</option>
+        <option value="3">السيرفر الصوتي: UDP</option>
+        <option value="4">السيرفر الصوتي: TCP+Relay</option>
+        <option value="5">السيرفر الصوتي: UDP+Relay</option>
+        <option value="6">السيرفر الصوتي: openrelay</option>
+      </select>
+      <select id="turn_bitrate" style="width:98%;margin:2px 4px" class="fl btn btn-primary"
+              onchange="bitrate=parseInt($(this).val());getCookie('bitrate',$(this).val())">
+        <option value="24">جودة المايك: الاساسيه</option>
+        <option value="8">جودة المايك: ضعيفه</option>
+        <option value="16">جودة المايك: متوسطه</option>
+        <option value="64">جودة المايك: عاليه</option>
+      </select>
+
+      <!-- تغيير الصورة -->
+      <label onclick="sendpic()" style="background-color:ghostwhite;color:black;margin:2px 4px;padding:8px;width:98%" class="label changepic tc border btn label-info fl">
+        <img style="width:32px;height:32px;margin:-8px" class="fitimg fl borderg spic corner hand">تغير الصوره
+      </label>
+      <label onclick="emit('setpic',{pic:'pic.png'})" style="color:black;margin:2px 4px;padding:8px;width:98%" class="label tc border btn label-danger fl">
+        <span class="fl fa fa-user-times"></span>حذف الصوره
+      </label>
+
+      <!-- تعطيل الخاص -->
+      <label onclick="nopm=!nopm;$(this).find('span').toggleClass('fa-check');emit('busy',{busy:nopm})"
+             style="background-color:ghostwhite;color:black;margin:2px 4px;padding:8px;width:98%" class="label tc border btn fl">
+        <span class="fa fl"></span>تعطيل المحادثات الخاصه
+      </label><br>
+
+      <!-- تعطيل التنبيهات -->
+      <label onclick="nonot=!nonot;$(this).find('span').toggleClass('fa-check')"
+             style="background-color:ghostwhite;color:black;margin:2px 4px;padding:8px;width:98%" class="label tc border btn fl">
+        <span class="fa fl"></span>تعطيل التنبيهات
+      </label><br>
+
+      <!-- إرسال إعلان (للمشرفين) -->
+      <label onclick="pmsg()" style="background-color:ghostwhite;color:black;margin:2px 4px;padding:8px;width:98%" class="label tc border pmsg btn label-info fl" style="display:none">
+        <span class="fl fa fa-send"></span>إرسال إعلان
+      </label><br>
+
+      <!-- إدارة الغرفة (للمالكين) -->
+      <label onclick="if(myroom!=null){redit(myroom)}" style="background-color:ghostwhite;color:black;margin:2px 4px;padding:8px;width:98%" class="label tc border redit btn label-info fl" style="display:none">
+        <span class="fl fa fa-home"></span>إداره الغرفه
+      </label><br>
+
+      <!-- لوحة التحكم (للمشرفين) -->
+      <a id="cplink" rel="opener" target="_blank" href="#" style="background-color:ghostwhite;color:black;margin:2px 4px;padding:8px;width:98%" class="label tc border cp btn label-danger fl" style="display:none">
+        <span class="fl fa fa-star"></span>لوحه التحكم
+      </a><br>
+
+      <!-- تسجيل الخروج -->
+      <label id="btn-logout" style="margin:2px 4px;padding:8px;width:98%" class="label border btn label-danger tc fl">
+        <span class="fl fa fa-sign-out"></span>تسجيل خروج
+      </label>
+    </div>
+
+  </div><!-- /flex-grow-1 -->
+</div><!-- /#dpnl -->
+
+<!-- ══════════════════════════════════════════════════════════════════
+     نافذة مكالمة واردة
+══════════════════════════════════════════════════════════════════ -->
+<div id="call" class="c-flex border bg" style="display:none;position:fixed;width:260px;z-index:1000;top:55px;left:5px;padding:2px">
+  <div class="fl d-flex uzr flex-grow-1 dots" style="margin:0;background-color:#fafafa">
+    <img style="width:31px;height:31px" class="fitimg fl hand u-pic">
+    <div style="width:100%;margin-top:0" class="fl dots d-flex flex-grow-1">
+      <img class="fl u-ico" alt="">
+      <span class="caller-name nosel flex-grow-1 u-topic dots" style="max-width:100%;padding:0 4px;border-radius:0;margin-left:1px"></span>
+    </div>
+  </div>
+  <div class="d-flex" style="margin-top:2px">
+    <span id="btn-reject" class="btn btn-danger fa fa-phone" style="padding:4px 24px;margin-right:2px"></span>
+    <span id="btn-answer" class="btn btn-success fa fa-phone" style="padding:4px 24px"></span>
+    <span class="flex-grow-1"></span>
+    <span class="label flex-grow-1 nosel stat">0:00:00</span>
+  </div>
+</div>
+
+<div id="icos" style="display:none"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     Templates (مخفية - يستخدمها x3_final.js)
+══════════════════════════════════════════════════════════════════ -->
+
+<!-- template كرت المستخدم في القائمة -->
+<x id="uhtml" style="display:none">
+  <div class="fl hand nosel uzr uhtml">
+    <div class="d-flex fl" style="padding-right:16px;width:100%">
+      <img class="ustat" style="width:4px;min-height:100%;max-height:62px" alt="">
+      <div class="fitimg u-pic"></div>
+      <span class="muted fa" style="color:indianred;display:none;width:16px;margin-right:-16px">&nbsp;</span>
+      <div style="padding:0 3px;overflow:hidden" class="flex-grow-1 break">
+        <div style="width:100%;display:flex;margin-top:1px;height:21px" class="d-flex dots">
+          <img class="u-ico" style="min-height:14px;margin-top:1px" alt="">
+          <div class="flex-grow-1"><span style="padding-top:1px;max-width:100%;border-radius:2px" class="u-topic"></span></div>
+        </div>
+        <div style="color:#888;padding:1px;max-height:40px" class="mini u-msg"></div>
+      </div>
+    </div>
+    <div class="c-flex fr" style="margin-left:-32px">
+      <img class="co ico" alt="">
+      <span class="uhash" style="color:grey;font-size:70%!important"></span>
+    </div>
+  </div>
+</x>
+
+<!-- template رسالة الدردشة العامة -->
+<x id="mhtml" style="display:none">
+  <div class="uzr d-flex" style="border-bottom:1px solid lavender;margin:0;width:100%;padding:0;background-color:#fafafa;padding-left:2px">
+    <div style="min-width:52px;width:52px;height:46px;background-color:#f3f3f3" class="fitimg u-pic borderg"></div>
+    <div class="uzr flex-fill break" style="padding-top:1px;padding-left:1px">
+      <div style="width:100%;display:flex;height:21px" class="d-flex">
+        <div class="d-flex flex-grow-1" style="overflow:hidden">
+          <img class="u-ico" style="min-height:14px">
+          <span style="padding:1px 4px;display:block;margin-left:1px;border-radius:2px" class="nosel u-topic dots hand"></span>
+        </div>
+        <div class="flex-grow-1 d-flex" style="height:21px;overflow-y:visible">
+          <span class="flex-grow-1"></span>
+          <span style="padding:0 2px;margin-right:4px;color:grey;text-align:end" class="minix tago">..</span>
+        </div>
+      </div>
+      <div style="padding:0 5px;width:100%;padding-right:1px;padding-bottom:1px" class="u-msg umsg break"></div>
+      <div class="d-flex fr" style="max-width:92px;height:21px">
+        <button style="padding:3px;width:28px" class="blike corner btn minix btn-danger fa fa-heart"></button>
+        <button style="padding:3px;width:28px" class="breply corner btn minix btn-primary fa fa-comments"></button>
+        <button style="padding:3px;width:26px" class="bdel corner btn minix btn-primary fa fa-times"></button>
+      </div>
+      <div class="reply break" style="max-height:0"></div>
+    </div>
+  </div>
+</x>
+
+<!-- template بطاقة الغرفة -->
+<x id="rhtml" style="display:none">
+  <div class="nosel d-flex room" style="text-align:left;width:100%;border-bottom:1px solid lavender;padding:0;padding-left:1px;background-color:#fafafa">
+    <div class="d-flex flex-grow-1" style="overflow:hidden;padding:1px">
+      <div style="min-width:52px;width:52px;min-height:50px;max-height:50px;background-color:#f3f3f3" class="fitimg u-pic borderg"></div>
+      <div style="padding:0 2px;overflow:hidden" class="flex-grow-1 break">
+        <div style="width:100%;display:flex;overflow:hidden;line-height:normal;margin-top:1px" class="d-flex">
+          <div class="flex-grow-1"><span style="padding:0 4px;max-width:100%;border-radius:2px" class="r-name u-topic dots"></span></div>
+        </div>
+        <div style="color:#888;margin-top:-1px" class="dots mini r-desc u-msg"></div>
+      </div>
+    </div>
+    <div class="c-flex">
+      <span class="corner fa fa-user label label-primary r-online uc" style="padding:3px;margin:1px;border-radius:2px;min-width:60px;text-align:center">0</span>
+    </div>
+  </div>
+</x>
+
+<!-- template رأس المستخدم في المشرفين -->
+<x id="uhead" style="display:none">
+  <div class="fl d-flex uzr flex-grow-1 dots" style="margin:3px">
+    <img class="fl ustat" style="width:4px;height:22px">
+    <img style="width:36px;height:36px" class="fitimg fl hand u-pic">
+    <div style="width:100%;margin-top:0" class="fl dots d-flex flex-grow-1">
+      <img class="fl u-ico" alt="">
+      <span style="max-width:100%;padding:0 4px;border-radius:0;margin-left:1px" class="nosel flex-grow-1 u-topic dots"></span>
+    </div>
+  </div>
+</x>
+
+<!-- template الإشعار -->
+<x id="not" class="hid">
+  <div onclick="$(this).remove()" style="min-width:180px;max-width:260px;border:1px solid black;z-index:2110;background-color:#efefef;position:absolute;top:30%;margin-left:30px;padding:5px" class="hand corner nosel">
+    <center>
+      <div class="corner border label label-primary" style="padding-top:6px;padding-left:15px;width:50%;padding-right:15px">تنبيه</div>
+    </center>
+    <div class="not-pic" style="width:40px;height:40px;border-radius:50%;background-size:cover;background-repeat:no-repeat;margin:0 auto 4px;"></div>
+    <div class="not-name" style="font-weight:bold;margin-top:4px"></div>
+    <div class="not-msg" style="margin-top:2px;color:#333"></div>
+  </div>
+</x>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     نوافذ Modal
+══════════════════════════════════════════════════════════════════ -->
+
+<!-- modal: ملف المستخدم -->
+<div class="modal" id="upro" role="dialog" style="z-index:2100">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width:340px;margin:-1px">
+      <div style="color:white;margin-top:-1px" onclick="$(this).parent().parent().parent().modal('hide')" class="modal-header label-primary">
+        <span class="pull-right clickable badge"><i class="fa fa-times"></i></span>
+        <label style="margin:1px;max-width:90%" class="mini dots nosel modal-title">ملف المستخدم</label>
+      </div>
+      <div class="modal-body" style="padding:1px">
+        <div class="light fl pro break" style="width:100%;border:1px solid lightgrey;padding:0;margin:0">
+          <center>
+            <div style="width:100%;height:200px;background-size:cover" class="fitimg fl u-pic">
+              <div style="width:100%;height:100%" class="fitimg bgf fl u-pic"></div>
+            </div>
+            <label style="width:100%;text-align:end;margin-bottom:0">
+              <div style="width:100%;padding:2px;text-align:center" class="fl u-name u-topic"></div>
+              <div style="width:100%;padding:2px;text-align:center;color:#888" class="fl u-msg"></div>
+            </label>
+          </center>
+          <span class="fl fa fa-comment btn upm borderg" style="color:black;margin:2px;width:106px;text-align:center">محادثه خاصه</span>
+          <span class="fl fa fa-envelope-o btn unot borderg" style="color:black;margin:2px;width:106px;text-align:center">تنبيه</span>
+          <span class="fl fa fa-heart btn ulike borderg" style="margin:2px;color:red;width:106px;text-align:center">0 <span class="u-likes"></span></span>
+          <span class="fl fa fa-microphone-slash btn uml borderg" style="color:black;margin:2px;margin-top:4px;width:106px;text-align:center">سحب المايك</span>
+          <span class="fl fa fa-microphone btn uma borderg" style="color:black;margin:2px;margin-top:4px;width:106px;text-align:center">سماح</span>
+          <span class="fl fa fa-diamond btn ugift borderg" style="color:blue;margin:2px;margin-top:4px;width:106px;text-align:center">ارسل هديه</span>
+          <span class="fl fa fa-search btn uh borderg" style="color:black;margin:2px;margin-top:4px;width:106px;text-align:center">كشف النكات</span>
+          <span class="fl fa fa-ban btn udelpic borderg" style="color:maroon;margin:2px;margin-top:4px;width:106px;text-align:center">حذف الصوره</span>
+          <span class="fl fa fa-user-times btn urkick borderg" style="color:darkorchid;margin:2px;margin-top:4px;width:106px;text-align:center">طرد من الغرفه</span>
+          <span class="fl fa fa-ban btn ukick borderg" style="color:crimson;margin:2px;margin-top:4px;width:106px;text-align:center">طرد</span>
+          <span class="fl fa fa-ban btn uban borderg" style="color:crimson;margin:2px;margin-top:4px;width:106px;text-align:center">باند</span>
+          <span class="fl fa fa-warning btn ureport borderg" style="color:black;margin:2px;margin-top:4px;width:106px;text-align:center">تبليغ</span>
+          <span class="fl fa fa-ban btn umute borderg" style="color:red;margin:2px;margin-top:4px;width:106px;text-align:center">تجاهل</span>
+          <span class="fl fa fa-check btn uunmute borderg" style="color:red;margin:2px;margin-top:4px;width:106px;text-align:center">إلغاء التجاهل</span>
+          <!-- صلاحية -->
+          <div class="border fl powerbox" style="width:100%;padding:4px;margin-top:2px">
+            <label>المجموعه</label><br>
+            <select style="width:200px;display:inline" class="userpower selbox form-control"></select><br>
+            <label>المده بالأيام</label><br>
+            <input type="number" class="userdays">
+            <span class="fa fr fa-check btn upower border" style="margin:2px">حفظ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal: إنشاء / تعديل غرفة -->
+<div class="modal" id="mkr" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width:310px">
+      <div style="color:white" onclick="$(this).parent().parent().parent().modal('hide')" class="modal-header label-primary">
+        <span class="pull-right clickable badge"><i class="fa fa-times"></i></span>
+        <label style="margin:1px" class="mini fa fa-comments modal-title">إنشاء غرفه جديدة</label>
+      </div>
+      <div class="modal-body" style="padding:1px">
+        <div class="break" style="background-color:#efefef;padding:5px">
+          <input class="rtopic" style="width:200px" type="text" placeholder="عنوان الغرفه">
+          <input class="rabout" style="width:200px" type="text" placeholder="الوصف">
+          <input class="rwelcome" style="width:200px" type="text" placeholder="رساله الترحيب">
+          <input autocomplete="off" class="rpwd" style="width:200px" type="text" placeholder="كلمه المرور">
+          <input class="rmax" style="width:200px" type="number" placeholder="حجم الغرفه (2-40)" min="2" max="40">
+          <br>
+          <label class="checkbox-inline"><input class="rv" type="checkbox" value="">تفعيل الصوتيه</label><br><br>
+          <button class="rmake btn btn-primary fl"><span class="fa fa-plus">إنشاء الغرفه</span></button>
+          <button class="rsave btn btn-primary fl"><span class="fa fa-edit">حفظ التعديلات</span></button>
+          <button class="rdelete btn btn-danger fr"><span class="fa fa-times">حذف</span></button>
+          <div class="break border corner" id="ops" style="width:100%;padding:2px;margin-top:4px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal: إرسال إعلان -->
+<div class="modal" id="mnot" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width:310px">
+      <div style="color:white" onclick="$(this).parent().parent().parent().modal('hide')" class="modal-header label-primary">
+        <span class="pull-right clickable badge"><i class="fa fa-times"></i></span>
+        <label style="margin:1px" class="mini fa fa-comments modal-title">إعلان</label>
+      </div>
+      <div class="modal-body" style="padding:1px">
+        <div class="break" style="background-color:#efefef;padding:5px">
+          <textarea placeholder="اكتب رسالتك هنا" class="fl" style="width:100%;resize:none"></textarea>
+          <label class="checkbox-inline"><input class="ispp" type="checkbox" value="">إعلان خاص للسوابر؟</label>
+          <button class="rsave btn btn-primary fr" onclick="pmsgSend()"><span class="fa fa-send">إرسال</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal: تعليقات الحائط -->
+<div class="modal break" id="rpl" role="dialog" style="margin:5px">
+  <div class="modal-dialog fr break" style="height:50%;min-height:300px;overflow:visible;margin-top:2px">
+    <div class="modal-content c-flex break" style="width:306px;height:100%">
+      <div style="color:white" onclick="$(this).parent().parent().parent().modal('hide')" class="modal-header label-primary">
+        <span class="pull-right clickable badge"><i class="fa fa-times"></i></span>
+        <label style="margin:1px" class="mini fa fa-comments modal-title">التعليقات</label>
+      </div>
+      <div class="modal-body break flex-grow-1 c-flex" style="padding:0">
+        <div style="width:100%;border-bottom:1px solid black" class="rmsg"></div>
+        <div class="break flex-grow-1 r" style="background-color:#efefef;border-left:4px solid grey"></div>
+        <div class="tablebox footer d-flex light fl" style="width:100%;height:42px;padding:4px">
+          <img role="button" class="fl nosel emobox" style="padding:5px;width:34px;height:34px" dsrc="imgs/emoii.gif">
+          <textarea placeholder="اكتب رسالتك هنا" class="fl flex-fill tbox"></textarea>
+          <button style="margin-left:2px" class="fa fa-send sndpm fl btn btn-primary">&nbsp;&nbsp;&nbsp;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     السكريبتات
+══════════════════════════════════════════════════════════════════ -->
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+<!-- Bootstrap JS (modal فقط) -->
+<script>
+/* minimal Bootstrap modal */
+!function(a){a.fn.modal=function(b){return this.each(function(){var c=a(this);if(b==="show"||b===undefined){c.css("display","block");setTimeout(function(){c.addClass("in");a("<div class='modal-backdrop fade in'></div>").appendTo(document.body).click(function(){c.modal("hide");});},10);}else if(b==="hide"){c.removeClass("in");a(".modal-backdrop").remove();c.hide();c.trigger("hidden.bs.modal");}});};
+a(document).on("click","[data-toggle='tab']",function(e){e.preventDefault();var t=a(this),h=t.attr("href");a(t.closest("ul").find("li")).removeClass("active");t.parent().addClass("active");a(t.closest(".tab-content").find(".tab-pane")).removeClass("active").hide();a(h).addClass("active").show();});
+}(jQuery);
+</script>
+
+<!-- Socket.IO -->
+<script src="/socket.io/socket.io.js"></script>
+
+<!-- SimplePeer للـ WebRTC -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.11.1/simplepeer.min.js"></script>
+
+<!-- x3_final.js - الكود الرئيسي -->
+<script src="x3_final.js"></script>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     دوال الربط - تصل بين HTML و x3_final.js
+══════════════════════════════════════════════════════════════════ -->
+<script>
+/* ── فتح لوحة dpnl ───────────────────────────────────────── */
+function openPanel(tabId, title) {
+  // أخفِ كل التبويبات
+  $('.pnl-tab').hide();
+  // wall له id خاص
+  var el = tabId === 'wall' ? $('#wall') : $('#pnl-' + tabId);
+  el.show();
+  if (el.hasClass('c-flex') || tabId === 'wall') el.css('display','flex');
+  // تحديث العنوان
+  $('#dpnl .pnhead').text(title);
+  // أظهر اللوحة
+  $('#dpnl').css('display','flex');
+}
+
+/* ── تمييز زر ────────────────────────────────────────────── */
+function hl(selector, cls) {
+  $(selector).addClass('label-' + cls);
+}
+
+/* ── إرسال رسالة الحائط ──────────────────────────────────── */
+function sendBc(withFile) {
+  var msg = $('.tboxbc').val().trim();
+  if (!msg) return;
+  $('.tboxbc').val('');
+  emit('bc', { msg: msg });
+}
+
+/* ── إرسال الإعلان ───────────────────────────────────────── */
+function pmsg() { $('#mnot').modal('show'); }
+function pmsgSend() {
+  var msg = $('#mnot textarea').val().trim();
+  if (!msg) return;
+  var ispp = $('#mnot .ispp').is(':checked');
+  emit('not', { msg: msg, force: ispp ? 1 : 0 });
+  $('#mnot').modal('hide');
+}
+
+/* ── إدارة الغرفة ────────────────────────────────────────── */
+function redit(roomId) {
+  var room = getRoomById(roomId);
+  if (!room) return;
+  $('#mkr .rtopic').val(room.name || '');
+  $('#mkr .rabout').val(room.desc || '');
+  $('#mkr .rpwd').val('');
+  $('#mkr .rmake').hide();
+  $('#mkr .rsave,.rdelete').show();
+  $('#mkr').data('editId', roomId);
+  $('#mkr').modal('show');
+}
+
+/* ── إنشاء غرفة جديدة ────────────────────────────────────── */
+function mkr() {
+  $('#mkr .rtopic,#mkr .rabout,#mkr .rpwd').val('');
+  $('#mkr .rmake').show();
+  $('#mkr .rsave,#mkr .rdelete').hide();
+  $('#mkr').removeData('editId');
+  $('#mkr').modal('show');
+}
+
+/* ── إرسال الغرفة (إنشاء) ───────────────────────────────── */
+$(document).on('click', '#mkr .rmake', function () {
+  var name = $('#mkr .rtopic').val().trim();
+  if (!name) return alert('اكتب عنوان الغرفة');
+  emit('r+', {
+    name: name,
+    desc: $('#mkr .rabout').val().trim(),
+    pwd:  $('#mkr .rpwd').val().trim()
+  });
+  $('#mkr').modal('hide');
+});
+
+/* ── حفظ تعديل الغرفة ───────────────────────────────────── */
+$(document).on('click', '#mkr .rsave', function () {
+  var id = $('#mkr').data('editId');
+  if (!id) return;
+  emit('r^', {
+    id:   id,
+    name: $('#mkr .rtopic').val().trim(),
+    desc: $('#mkr .rabout').val().trim(),
+    pwd:  $('#mkr .rpwd').val().trim()
+  });
+  $('#mkr').modal('hide');
+});
+
+/* ── حذف الغرفة ──────────────────────────────────────────── */
+$(document).on('click', '#mkr .rdelete', function () {
+  var id = $('#mkr').data('editId');
+  if (!id || !confirm('هل تريد حذف الغرفة؟')) return;
+  emit('r-', id);
+  $('#mkr').modal('hide');
+});
+
+/* ── تعيين الملف الشخصي ──────────────────────────────────── */
+function setprofile() {
+  emit('profile', {
+    topic: $('.stopic').val().trim(),
+    msg:   $('.smsg').val().trim(),
+    ucol:  $('.scolor').css('background-color'),
+    mcol:  $('.mcolor').css('background-color'),
+    bg:    $('.sbg').css('background-color')
+  });
+}
+
+/* ── تغيير الصورة ────────────────────────────────────────── */
+function sendpic() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function () {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      emit('setpic', { pic: e.target.result });
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+/* ── كتم كل المايكات ─────────────────────────────────────── */
+function muteAll() {
+  emit('muteall', {});
+}
+
+/* ── تحديث قائمة المستخدمين ──────────────────────────────── */
+function updateusers() {
+  emit('ulist', {});
+}
+
+/* ── ملف مستخدم (upro) ───────────────────────────────────── */
+// upro موجودة في x3_final.js - نربط الأزرار هنا
+$(document).on('click', '#upro .upm', function () {
+  var uid = $('#upro').attr('data-uid');
+  if (!uid) return;
+  openPmPanel(uid, true);
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .unot', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('not', { user: uid, msg: $('#upro').find('.u-name').text(), force: 0 });
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .ulike', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('cp', { cmd: 'like', id: uid });
+});
+$(document).on('click', '#upro .uml', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('uml', uid);
+});
+$(document).on('click', '#upro .uma', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('cp', { cmd: 'mic_allow', id: uid });
+});
+$(document).on('click', '#upro .ugift', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('cp', { cmd: 'gift', id: uid });
+});
+$(document).on('click', '#upro .uh', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('uh', uid);
+});
+$(document).on('click', '#upro .udelpic', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('cp', { cmd: 'delpic', id: uid });
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .urkick', function () {
+  var uid = $('#upro').attr('data-uid');
+  emit('cp', { cmd: 'roomkick', id: uid });
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .ukick', function () {
+  var uid = $('#upro').attr('data-uid');
+  if (!confirm('تأكيد الطرد؟')) return;
+  emit('cp', { cmd: 'kick', id: uid });
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .uban', function () {
+  var uid = $('#upro').attr('data-uid');
+  if (!confirm('تأكيد الحظر؟')) return;
+  emit('cp', { cmd: 'ban', id: uid, type: 'exact' });
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .ureport', function () {
+  var uid = $('#upro').attr('data-uid');
+  var reason = prompt('سبب البلاغ؟', '');
+  if (reason === null) return;
+  emit('cp', { cmd: 'report', id: uid, msg: reason });
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .umute', function () {
+  var uid = $('#upro').attr('data-uid');
+  var user = getUserById(uid);
+  if (user) blockUser(uid);
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .uunmute', function () {
+  var uid = $('#upro').attr('data-uid');
+  var user = getUserById(uid);
+  if (user) unblockUser(user.lid);
+  $('#upro').modal('hide');
+});
+$(document).on('click', '#upro .upower', function () {
+  var uid   = $('#upro').attr('data-uid');
+  var power = $('#upro .userpower').val();
+  var days  = parseInt($('#upro .userdays').val()) || 0;
+  emit('cp', { cmd: 'setpower', id: uid, power: power, days: days });
+});
+
+/* ── ربط زر إرسال رسالة بحث ─────────────────────────────── */
+$(document).on('keypress', '#tbox', function (e) {
+  if (e.which === 13 && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage('#tbox');
+  }
+});
+$(document).on('keypress', '.tboxbc', function (e) {
+  if (e.which === 13 && !e.shiftKey) {
+    e.preventDefault();
+    sendBc();
+  }
+});
+
+/* ── إعادة تعريف initChat لعرض #room وإخفاء .dad ─────────── */
+var _origInitChat = initChat;
+initChat = function () {
+  _origInitChat();
+  $('.dad').hide();
+  $('#room').show();
+  // تحديث رابط لوحة التحكم
+  $('#cplink').attr('href', 'cp?cp=' + myid);
+  // استعادة إعدادات الزوم
+  var savedZoom = getStorage('zoom');
+  if (savedZoom) {
+    document.body.style.zoom = savedZoom;
+    $('#zoom').val(savedZoom);
+  }
+  var savedTs = getStorage('turn_server');
+  if (savedTs) {
+    turn_server = parseInt(savedTs);
+    $('#turn_server_sel').val(savedTs);
+  }
+  var savedBr = getStorage('bitrate');
+  if (savedBr) {
+    bitrate = parseInt(savedBr);
+    $('#turn_bitrate').val(savedBr);
+  }
+};
+
+/* ── إعادة تعريف updateCpMenu لتحديث أزرار المشرفين ─────── */
+var _origUpdateCpMenu = updateCpMenu;
+updateCpMenu = function () {
+  _origUpdateCpMenu();
+  if (v475.cp || v475.owner) {
+    $('.pmsg,.redit,.cp').show();
+  } else {
+    $('.pmsg,.redit,.cp').hide();
+  }
+};
+
+/* ── تهيئة dpnl لتكون flex عند الفتح ────────────────────── */
+$('#dpnl').css('display','none');
+</script>
+
+</body>
+</html>
