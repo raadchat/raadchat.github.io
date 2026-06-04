@@ -438,19 +438,19 @@
       <div style="width:100%;height: 74px;" class="tab-content fl">
         <div id="l1" style="padding:4px;width:100%;" class="tab-pane in active">
           <input style="width: 206px;margin-top:33px;padding:5px;border-radius: 2px;height:33px;" autocomplete="off" type="search" class="border corner" id="u1" placeholder="أكتب الاسم المستعار">
-          <button style="margin-top:1px;" onclick="handleLogin(1);" aria-label="enter" class="btn btn-primary">دخول</button>
+          <button style="margin-top:1px;" onclick="login(1);" aria-label="enter" class="btn btn-primary">دخول</button>
         </div>
         <div id="l2" style="padding:4px;width:100%;" class="tab-pane hid">
           <input style="width: 206px;padding:5px;border-radius: 2px;height:33px;" id="u2" class="border corner" placeholder="اكتب اسم العضو">
           <input style="width: 206px;padding:5px;border-radius: 2px;height:33px;" id="pass1" class="border corner" type="password" placeholder="اكتب كلمه المرور">
-          <button onclick="handleLogin(2);" class="btn btn-primary">دخول</button>
+          <button onclick="login(2);" class="btn btn-primary">دخول</button>
           <span onclick="$(this).toggleClass('label-info');$('#stealth').prop('checked',$(this).hasClass('label-info'));" style="color: black;padding:4px;margin:2px;border-radius:4px;" class="btn fr fa fa-eye"></span>
           <input style="display: none;" id="stealth" type="checkbox" value="">   
         </div>
         <div id="l3" style="padding:4px;width:100%;" class="tab-pane hid">
           <input style="width: 206px;padding:5px;border-radius: 2px;height:33px;" id="u3" class="border corner" placeholder="اكتب اسم العضو">
           <input style="width: 206px;padding:5px;border-radius: 2px;height:33px;" id="pass2" class="border corner" type="password" placeholder="اكتب كلمه المرور">
-          <button onclick="handleLogin(3);" class="btn btn-primary">دخول</button>
+          <button onclick="login(3);" class="btn btn-primary">دخول</button>
         </div>
         <h6 class="hid">
           شات السعودية للجوال
