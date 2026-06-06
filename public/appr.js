@@ -23,7 +23,7 @@ var audioProcessor;
 var userSessionToken = null;
 var userAuthHash = '';
 var isReconnecting = false;
-
+var isLoginActionTriggered = false;   // <-- هذا السطر مهم
 var activeCallInstance = null;
 var allUsersList = {};
 var isRoomLocked = false;
