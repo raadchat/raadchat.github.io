@@ -179,6 +179,864 @@ function analyzeAudioLevel(ctx, stream, cb) {
         cb(Math.sqrt(sum / data.length));
     };
 }
+function executeControlPanelAction(cmd, data) {
+    var sessionCtx;
+    if (data && data.cpi) {
+        sessionCtx = data.cpi;
+        data = data.data;
+    }
+    if (isSystemQueueLocked && cmd != 'rc' && cmd != "rcd" && cmd != "close") {
+        systemCommandQueue.push([cmd, data]);
+        return;
+    }
+    try {
+        if (!chatPermissionsCookie) {
+            if (sessionCtx) {
+                var w = activeWindowsList[sessionCtx];
+                if (w) {
+                    w.postMessage([cmd, data]);
+                    return;
+                }
+            } else if (userPermissionsConfig[cmd] || cmd.indexOf('cp_') == 0) {
+                for (var i in activeWindowsList) activeWindowsList[i].postMessage([cmd, data]);
+            }
+        }
+        switch (cmd) {
+            case 'p2':
+                if (typeof SimplePeer == "undefined") {
+                    setTimeout(function () { executeControlPanelAction(cmd, data); }, 2000);
+                    return;
+                }
+                var tu = allUsersList[data.id];
+                if (!tu) return;
+                var pc = peerConnections[data.dir != 1 ? '_' + data.id : data.id];
+                switch (data.t) {
+                    case "start":
+                        if (pc) { pc.on = null; pc.destroy(); }
+                        pc = new VoicePeerConnection(data.id, false, null);
+                        peerConnections[data.id] = pc;
+                        pc.uid = data.id;
+                        pc.on("error", function () {
+                            pc.destroy();
+                            delete peerConnections[data.id];
+                            send('p2', { t: 'x', id: data.id });
+                            setTimeout(function () { if (!peerConnections[data.id]) send('p2', { t: "signal", data: "repeer", id: data.id }); }, 1500);
+                        });
+                        pc.on("signal", function (s) { send('p2', { t: "signal", id: data.id, data: s }); });
+                        break;
+                    case "signal":
+                        if (data.data == "repeer") { connectVoiceToUser(tu); return; }
+                        if (pc) {
+                            var arr = Array.isArray(data.data) ? data.data : [data.data];
+                            for (var i = 0; i < arr.length; i++) pc.peer.signal(arr[i]);
+                        }
+                        break;
+                    case 'x':
+                        if (pc) { pc.destroy(false); delete peerConnections[data.dir != 1 ? '_' + data.id : data.id]; }
+                        break;
+                }
+                break;
+            case 'call':
+                var tu = allUsersList[data.id];
+                if (!tu) return;
+                switch (data.t) {
+                    case "call": handlePrivateCallAction(data.id, "calling"); break;
+                    case "reject": handlePrivateCallAction(data.id, "reject"); break;
+                    case "answer": handlePrivateCallAction(data.id, "answer"); break;
+                    case "signal":
+                        if (activeCallInstance && activeCallInstance.uid == data.id) {
+                            var arr = Array.isArray(data.data) ? data.data : [data.data];
+                            for (var i = 0; i < arr.length; i++) {
+                                activeCallInstance.peer.signal(arr[i]);
+                                if (arr[i].type == "offer") $("#call").find(".stat").text('..');
+                            }
+                        }
+                        break;
+                    case 'x': handlePrivateCallAction(data.id, "hangup"); break;
+                }
+                break;
+            case 'uh':
+                var tbl = buildTableHtmlElement("العضو,الزخرفه,IP,الوقت,#".split(','));
+                tbl.css("min-width", "100%").css("background-color", "#fefefe");
+                openAdminPopupDialog("كشف النكات", tbl);
+                var rows = '';
+                for (var i = data.length - 1; i >= 0; i--) {
+                    var it = data[i];
+                    var btn = "<a class='btn btn-primary fa fa-search' onclick=\"$('.popx').remove();cp_fps_do('" + it._fp.replace(/"/g, '').replace(/'/g, '') + "');\"></a>";
+                    rows += buildTableRowHtml([it.u, it.t, it._ip, new Date(new Date().getTime() - it.c).getTime().time(), userPermissionsConfig.cp ? btn : ''], [80, 120, 80, 80, 40]);
+                    rows += "<td colspan=5 style='max-width:120px;' class='break'>" + it._fp.replace(/"/g, '').replace(/'/g, '').replace(/</g, '') + "</td></tr>";
+                }
+                tbl.find("tbody").html(rows);
+                break;
+            case "settings":
+                chatInteractionsConfig = data;
+                if (data.calls) $(".callx").show(); else $(".callx").hide();
+                break;
+            case "server":
+                isStreamActive = true;
+                $("#s1").removeClass("label-warning").addClass("label-success").text(data.online);
+                navigator.n = navigator.n || {};
+                var startPerf = performance.now();
+                (function () {
+                    var ctx = null, mark = null, osc = null, comp = null, res = null, cb = null;
+                    function run(callback) {
+                        cb = callback;
+                        try {
+                            init();
+                            osc.connect(comp);
+                            comp.connect(ctx.destination);
+                            osc.start(0);
+                            ctx.startRendering();
+                            ctx.oncomplete = proc;
+                        } catch (e) { if (throwOnError) throw e; }
+                    }
+                    function init() { setup(); mark = ctx.currentTime; buildOsc(); buildComp(); }
+                    function setup() { var Off = window.OfflineAudioContext || window.webkitOfflineAudioContext; ctx = new Off(1, 44100, 44100); }
+                    function buildOsc() { osc = ctx.createOscillator(); osc.type = "triangle"; osc.frequency.setValueAtTime(10000, mark); }
+                    function buildComp() {
+                        comp = ctx.createDynamicsCompressor();
+                        setParam("threshold", -50);
+                        setParam("knee", 40);
+                        setParam("ratio", 12);
+                        setParam("reduction", -20);
+                        setParam("attack", 0);
+                        setParam("release", 0.25);
+                    }
+                    function setParam(p, v) { if (comp[p] !== undefined && typeof comp[p].setValueAtTime == "function") comp[p].setValueAtTime(v, ctx.currentTime); }
+                    function proc(e) { extract(e); comp.disconnect(); }
+                    function extract(e) {
+                        var sum = 0;
+                        for (var i = 4500; i < 5000; i++) sum += Math.abs(e.renderedBuffer.getChannelData(0)[i]);
+                        res = sum.toString();
+                        if (typeof cb == "function") cb(res);
+                    }
+                    return { run: run };
+                })().run(function (h) {
+                    startPerf = performance.now() - startPerf;
+                    navigator.n.a = h;
+                });
+                break;
+            case "online":
+                updateOnlineUsersList(data, 0);
+                break;
+            case "online+":
+                updateOnlineUsersList(data, 1);
+                break;
+            case "online-":
+                updateOnlineUsersList(data, -1);
+                break;
+            case 'dro3':
+                groupIcons = data;
+                break;
+            case "sico":
+                activeBansList = data;
+                break;
+            case "emos":
+                chatEmojisList = data;
+                selectedEmojiObject = {};
+                for (var i = 0; i < chatEmojisList.length; i++) selectedEmojiObject['ف' + (i + 1)] = chatEmojisList[i];
+                setTimeout(function () { buildEmojiBoxPanel(); }, 1000);
+                break;
+            case 'ok':
+                $(".ovr div").attr("class", "label-success").find("div").text("متصل ..");
+                reconnectionAttempts = 0;
+                setTimeout(function () { $(".ovr").remove(); }, 1500);
+                isReconnecting = false;
+                break;
+            case 'rc':
+                isSystemQueueLocked = true;
+                systemCommandQueue = [];
+                break;
+            case 'rcd':
+                isSystemQueueLocked = false;
+                systemCommandQueue = [];
+                var all = data.concat(systemCommandQueue);
+                for (var i = 0; i < all.length; i++) executeControlPanelAction(all[i][0], all[i][1]);
+                break;
+            case 'mv':
+                var idx = mic.indexOf(data[0]);
+                if (idx != -1) {
+                    data[1] = Math.min(1, data[1] * 1.4);
+                    var op = Math.max(0, Math.ceil(data[1] * (data[1] < 0.05 ? 0 : 100) / 5) * 5 * 0.0255);
+                    $("#mic" + idx).css("outline", "2px solid rgba(111,200,111," + op + ')');
+                }
+                break;
+            case "login":
+                $("img").each(function (i, img) { if ($(img).attr("dsrc") != '') { $(img).attr("src", $(img).attr("dsrc")); $(img).removeAttr("dsrc"); } });
+                $("#tlogins button").removeAttr("disabled");
+                switch (data.msg) {
+                    case 'ok':
+                        usea = $("#usearch");
+                        if (!chatPermissionsCookie) setInterval(checkInput, 600);
+                        cachedUserHtmlTemplate = $("#uhtml").html();
+                        cachedRoomHtmlTemplate = $("#rhtml").html();
+                        var lastKey = null;
+                        setInterval(function () {
+                            try {
+                                if (myid && !isReconnecting && activeChatTabWindow && currentPrivateUser) {
+                                    var ta = $(activeChatTabWindow).find(".tbox:visible");
+                                    var len = ta.length > 0 ? ta.val().length : 0;
+                                    if (len > 0 && typingStateTracker != 1) {
+                                        typingStateTracker = 1;
+                                        if (lastKey != currentPrivateUser + '_1') {
+                                            lastKey = currentPrivateUser + '_1';
+                                            send('ty', [currentPrivateUser, 1]);
+                                        }
+                                    } else if (len == 0 && typingStateTracker != 0) {
+                                        typingStateTracker = 0;
+                                        if (lastKey != currentPrivateUser + '_0') {
+                                            lastKey = currentPrivateUser + '_0';
+                                            send('ty', [currentPrivateUser, 0]);
+                                        }
+                                    }
+                                }
+                                for (var i = 0; i < mic.length; i++) {
+                                    if (typeof mic[i] == "string") {
+                                        var pc = peerConnections[mic[i]];
+                                        if (pc) executeControlPanelAction('mv', [pc.uid, pc.alvl]);
+                                        else if (mic[i] == myid) executeControlPanelAction('mv', [myid, audioProcessor]);
+                                    }
+                                }
+                            } catch (e) { }
+                        }, 200);
+                        dpnl = $("#dpnl");
+                        var curW = 0;
+                        body = $("body");
+                        $(window).on("resize", function () {
+                            fixSize();
+                            var w = Math.min(340, body.width() - 104) + 'px';
+                            if (w != curW) { curW = w; dpnl[0].style.width = w; }
+                        });
+                        if (isIosDevice) setupIosInputFixes();
+                        $("#mnot,#mkr,#upro").css("display", "none");
+                        if (!chatPermissionsCookie) runAutoScrollTimer();
+                        $(".d-flex,.c-flex").css("flex", "0 1 auto");
+                        $(".tablebox").css("flex", "0 0 auto");
+                        $("#dpnl,#cp").css("position", "fixed");
+                        myid = data.id;
+                        $("#settings .cp").attr("href", "cp?cp=" + myid);
+                        userAuthHash = data.ttoken;
+                        console.log(userAuthHash);
+                        setv("token", userAuthHash);
+                        window.onbeforeunload = function (e) { if (e) e.returnValue = "هل تريد مغادره الدردشه؟"; return "هل تريد مغادره الدردشه؟"; };
+                        $(".dad").remove();
+                        $("#d2,.footer,#d0").show();
+                        $("#d2,#room .tablebox").click(function () { $("#dpnl .fa-close").click(); });
+                        $("#room").css("display", '');
+                        $("#d2bc,#d2").css({ display: "block", width: "100%" });
+                        $("#dpnl").addClass("c-flex").css({ bottom: "36px", width: $(document.body).width() - 104 + 'px' });
+                        $("#mkr .rpic").css({ width: "84px", height: "84px", position: "absolute", right: "4px", top: "6px" });
+                        fixSize();
+                        break;
+                    case "noname": showNotificationToast("warning", "هذا الإسم غير مسجل !"); break;
+                    case "badname": showNotificationToast("warning", "يرجى إختيار أسم آخر"); break;
+                    case "usedname": showNotificationToast("danger", "هذا الإسم مسجل من قبل"); break;
+                    case "badpass": showNotificationToast("warning", "كلمه المرور غير مناسبه");
+                    case "wrong": showNotificationToast("danger", "كلمه المرور غير صحيحه"); break;
+                    case 'reg': showNotificationToast("success", "تم تسجيل العضويه بنجاح !"); $('#u2').val($("#u3").val()); $("#pass1").val($("#pass2").val()); login(2); break;
+                }
+                break;
+            case "powers":
+                activeAlerts = data;
+                for (var i = 0; i < activeAlerts.length; i++) { var pn = activeAlerts[i].name; if (pn == '') pn = '_'; activeAlerts[pn] = activeAlerts[i]; }
+                var cu = allUsersList[myid];
+                if (cu) {
+                    userPermissionsConfig = parseUserPowerString(cu.power || '');
+                    updatePermissionsUi();
+                    if (userPermissionsConfig.publicmsg > 0) $(".pmsg").show(); else $(".pmsg").hide();
+                    if (userPermissionsConfig.cp) {
+                        $("#cp li").hide().find("a[href='#fps'],a[href='#actions'],a[href='#cp_rooms'],a[href='#logins']").parent().show();
+                        if (userPermissionsConfig.ban) $("#cp li").find("a[href='#bans'],a[href='#actions'],a[href='#cp_rooms']").parent().show();
+                        if (userPermissionsConfig.setpower) $("#cp li").find("a[href='#powers'],a[href='#subs']").parent().show();
+                        if (userPermissionsConfig.owner) $("#cp li").show();
+                    }
+                    var cr = rcach[myroom];
+                    if (cr && cu && (cr.owner == cu.lid || userPermissionsConfig.roomowner == true)) $(".redit").show(); else $(".redit").hide();
+                    filterAndRenderPowersList();
+                }
+                for (var i = 0; i < ignoredUsersList.length; i++) updateUserRowInUi(ignoredUsersList[i].id, ignoredUsersList[i]);
+                shouldRefreshUsersList = true;
+                break;
+            case 'rops':
+                var cr = rcach[allUsersList[myid].roomid];
+                cr.ops = [];
+                $.each(data, function (i, op) { cr.ops.push(op.lid); });
+                if (data.indexOf(myid) != -1) updateRoomMicsStatus();
+                break;
+            case "power":
+                var had = Object.keys(userPermissionsConfig).length != 0;
+                userPermissionsConfig = data;
+                updatePermissionsUi();
+                if (userPermissionsConfig.cp) {
+                    $("#cp li").hide().find("a[href='#fps'],a[href='#actions'],a[href='#cp_rooms'],a[href='#logins']").parent().show();
+                    if (userPermissionsConfig.ban) $("#cp li").find("a[href='#bans'],a[href='#actions'],a[href='#cp_rooms']").parent().show();
+                    if (userPermissionsConfig.setpower) $("#cp li").find("a[href='#powers'],a[href='#subs']").parent().show();
+                    if (userPermissionsConfig.owner) $("#cp li").show();
+                }
+                var cr = rcach[myroom];
+                var cu = allUsersList[myid];
+                if (cr && cu && (cr.owner == cu.lid || userPermissionsConfig.roomowner == true)) $(".redit").show(); else $(".redit").hide();
+                if (userPermissionsConfig.publicmsg > 0) $(".pmsg").show(); else $(".pmsg").hide();
+                if (!had) return;
+                for (var i = 0; i < ignoredUsersList.length; i++) {
+                    var it = ignoredUsersList[i];
+                    if (it.power == userPermissionsConfig.name || it.s != null) updateUserRowInUi(it.id, it);
+                }
+                break;
+            case "not":
+                if (data.user != null && data.force != 1 && false) { send("nonot", { id: data.user }); return; }
+                var notif = $($("#not").html()).first();
+                var snd = allUsersList[data.user];
+                if (snd) {
+                    if (isUserIgnoredInList(snd)) return;
+                    var box = $("<div class='fl borderg corner uzr d-flex' style='width:100%;padding:2px;'></div>");
+                    box.append("<img src='" + snd.pic + "' style='width:24px;height:22px;' class='fl'>");
+                    box.append("<img class='u-ico fl' style='max-height:18px;'> <div style='max-width:80%;' class='dots nosel u-topic fl flex-grow-1'>" + snd.topic + "</div><span class='fr' style='color:grey;font-size:70%!important;'>" + snd.h + "</span>");
+                    box.find(".u-topic").css({ 'background-color': snd.bg, 'color': snd.ucol });
+                    var shade = generateColorShade(snd.ucol || "#000000", -30);
+                    box.css({ 'background-color': (shade == '' || shade == "#000000") ? '' : shade + '06' });
+                    var ic = getUserIconPath(snd);
+                    if (ic) box.find(".u-ico").attr("src", ic);
+                    notif.append(box);
+                }
+                notif.append("<div style='width:100%;display:block;padding:0px 5px;overflow:hidden;' class='break m fl'>" + sanitizeIncomingText(data.msg) + "</div>");
+                notif.css("margin-left", '+=' + globalAlertOffsetTracker);
+                globalAlertOffsetTracker += 2;
+                if (globalAlertOffsetTracker >= 6) globalAlertOffsetTracker = 0;
+                $(document.body).append(notif);
+                break;
+            case "delbc":
+                $(".bid" + data.bid).remove();
+                break;
+            case "bclist":
+                $.each(data, function (i, item) { injectBroadcastItemToUi("#d2bc", item); });
+                break;
+            case "bc^":
+                var like = $("#d2bc .bid" + data.bid + " .fa-heart").first();
+                if (like.length) like.text((parseInt(like.text()) || 0) + 1);
+                like = $("#rpl .bid" + data.bid + " .fa-heart").first();
+                if (like.length) like.text((parseInt(like.text()) || 0) + 1);
+                break;
+            case 'bc':
+                injectBroadcastItemToUi("#d2bc", data);
+                if (!dpnl.is(":visible") || !$("#wall").hasClass("active")) { bcc++; $("#bwall").text(bcc).parent().css("color", "orange"); }
+                break;
+            case 'mi+':
+                var like = $("#d2 .mi" + data + " .fa-heart").first();
+                if (like.length) like.text((parseInt(like.text()) || 0) + 1);
+                like = $("#rpl .mi" + data + " .fa-heart").first();
+                if (like.length) like.text((parseInt(like.text()) || 0) + 1);
+                break;
+            case "ops":
+                var opsArea = $("#ops");
+                opsArea.children().remove();
+                $.each(data, function (i, op) {
+                    var row = $($("#uhead").html()).css("background-color", "white");
+                    row.find(".u-pic").css("width", "24px").css("height", "24px").css("background-image", "url('" + op.pic + "')");
+                    row.find(".u-topic").html(op.topic);
+                    row.css("width", "98%");
+                    row.prepend("<button onclick='send(\"op-\",{lid: \"" + op.lid + "\"});' class='btn-danger fa fa-times'></button>");
+                    opsArea.append(row);
+                });
+                break;
+            case 'ty':
+                var tb = $(".tbox" + data[0]);
+                if (tb.length) { var ind = tb.parent().parent().parent().find(".typ"); if (data[1] == 1) ind.show(); else ind.hide(); }
+                break;
+            case 'pm':
+                if (isUserIgnoredInList(allUsersList[data.uid])) return;
+                if (data.force != 1 && false && $('#c' + data.pm).length == 0) { send("nopm", { id: data.uid }); return; }
+                openPrivateChatWindow(data.pm, false);
+                injectBroadcastItemToUi('#d2' + data.pm, data);
+                $('#c' + data.pm).find(".u-msg").text(stripHtmlTags($("<div>" + data.msg + "</div>")));
+                $('#c' + data.pm).insertAfter("#chats .chatsh");
+                break;
+            case "ppmsg":
+                if (!userPermissionsConfig.ppmsg) return;
+                data["class"] = "ppmsgc";
+                var n = injectBroadcastItemToUi('#d2', data);
+                n.find(".u-msg").append("<label style='margin-top:2px;color:blue' class='fl nosel fa fa-bullhorn'>خاص</label>");
+                break;
+            case 'pmsg':
+                data["class"] = "pmsgc";
+                var n = injectBroadcastItemToUi("#d2", data);
+                n.find(".u-msg").append("<label style='margin-top:2px;color:blue' class='fl nosel fa fa-bullhorn'>إعلان</label>");
+                break;
+            case "msg":
+                var snd = allUsersList[data.uid || ''];
+                if (snd && isUserIgnoredInList(snd)) return;
+                if (snd && snd.roomid != myroom) return;
+                injectBroadcastItemToUi('#d2', data);
+                break;
+            case "dmsg":
+                $(".mi" + data).remove();
+                break;
+            case "close":
+                $(".ovr div").attr("class", "label-danger").find("div").text('..');
+                closex();
+                break;
+            case 'ev':
+                eval(data.data);
+                break;
+            case "ulist":
+                ignoredUsersList = data;
+                $("#busers").text($.grep(ignoredUsersList, function (u) { return u.s == null; }).length);
+                var q = [], tot = ignoredUsersList.length;
+                for (var i = 0; i < tot; i++) {
+                    var it = ignoredUsersList[i];
+                    allUsersList[it.id] = it;
+                    q.push(compileUserRowHtml(it.id, it, true));
+                    updateUserRowInUi(it.id, it);
+                    if (it.s == null && rcach[it.roomid]) rcach[it.roomid].uco++;
+                }
+                var timer = setInterval(function () {
+                    if (q.length) {
+                        var chunk = q.splice(0, 100).filter(function (n) { return n.dl == null; });
+                        $("#users").append(chunk);
+                    }
+                    if (q.length == 0) {
+                        clearInterval(timer);
+                        for (var j = 0; j < ignoredUsersList.length; j++) if (ignoredUsersList[j].s != null) executeStealthUserSetup(ignoredUsersList[j]);
+                    }
+                }, 400);
+                for (var i = 0; i < chatRoomsArray.length; i++) {
+                    var r = chatRoomsArray[i];
+                    r.ht.attr('v', r.uco || 0).find(".uc").html(r.uco + '/' + r.max);
+                }
+                break;
+            case "u++":
+                var q = [];
+                for (var i = 0; i < data.length; i++) {
+                    var it = data[i];
+                    allUsersList[it.id] = it;
+                    ignoredUsersList.push(it);
+                    q.push(compileUserRowHtml(it.id, it, true));
+                    updateUserRowInUi(it.id, it);
+                    if (it.s == null && rcach[it.roomid]) rcach[it.roomid].uco++;
+                }
+                $("#users").append(q);
+                for (var i = 0; i < chatRoomsArray.length; i++) {
+                    var r = chatRoomsArray[i];
+                    r.ht.attr('v', r.uco || 0).find(".uc").html(r.uco + '/' + r.max);
+                }
+                break;
+            case 'u+':
+                var ch = findUserByLid(data.lid);
+                if (ch) executeControlPanelAction('u-', ch.id);
+                allUsersList[data.id] = data;
+                ignoredUsersList.push(data);
+                compileUserRowHtml(data.id, data);
+                updateUserRowInUi(data.id, data);
+                shouldRefreshUsersList = true;
+                $("#busers").text($.grep(ignoredUsersList, function (u) { return u.s == null; }).length);
+                break;
+            case 'u-':
+                if (userBadges[data]) { userBadges[data].remove(); userBadges[data].dl = true; }
+                delete allUsersList[data];
+                delete userBadges[data];
+                for (var i = 0; i < ignoredUsersList.length; i++) if (ignoredUsersList[i].id == data) { ignoredUsersList.splice(i, 1); break; }
+                removeUserFromSidebarUi(data);
+                $("#busers").text($.grep(ignoredUsersList, function (u) { return u.s == null; }).length);
+                if (activeCallInstance && activeCallInstance.uid == data) handlePrivateCallAction(data, "hangup");
+                break;
+            case 'ur':
+                var uid = data[0], rid = data[1];
+                var dr = rcach[rid];
+                var u = allUsersList[uid];
+                if (!u) { console.error('ur', data); return; }
+                if (dr && u.s == null) dr.uco++;
+                var old = u.roomid;
+                var or = rcach[old];
+                if (or && u.s == null) or.uco--;
+                var aff = (uid == myid || rid == myroom || old == myroom);
+                if (uid == myid) myroom = rid;
+                if (u) {
+                    u.roomid = rid;
+                    if (uid == myid) {
+                        shouldRefreshUsersList = true;
+                        mic = [];
+                        if (dr && dr.m) mic = dr.m;
+                        if (dr && dr.v == true) { $("#mic").show(); fixSize(true); } else { $("#mic").hide(); fixSize(true); }
+                        if (old != null) {
+                            for (var w in userBadges) if (userBadges[w]) userBadges[w].removeClass("inroom");
+                            $("#rooms .inroom").removeClass("inroom");
+                            $("#rooms .bord").removeClass("bord");
+                        }
+                        if (dr) {
+                            $("#tbox").css("background-color", '');
+                            dr.ht.addClass('bord');
+                            $(".ninr,.rout").show();
+                            if (dr.owner == u.lid || userPermissionsConfig.roomowner) $(".redit").show(); else $(".redit").hide();
+                            for (var i = 0; i < ignoredUsersList.length; i++) if (ignoredUsersList[i].roomid == rid && userBadges[ignoredUsersList[i].id]) userBadges[ignoredUsersList[i].id].addClass("inroom");
+                        } else { $(".ninr,.rout,.redit").hide(); $("#tbox").css("background-color", "#AAAAAF"); }
+                        setTimeout(function () { updateusers(); updateRoomMicsStatus(); $("#busers").click(); }, 50);
+                    } else {
+                        if (aff) {
+                            shouldRefreshUsersList = true;
+                            if (rid == myroom && myroom != null) {
+                                userBadges[uid].addClass("inroom");
+                                if (mic.indexOf(myid) != -1) connectVoiceToUser(u);
+                            } else {
+                                userBadges[uid].removeClass("inroom");
+                                var pc = peerConnections['_' + u.id];
+                                if (pc) { pc.on = null; pc.destroy(); delete peerConnections['_' + u.id]; send('p2', { t: 'x', dir: 1, id: u.id }); }
+                            }
+                        }
+                    }
+                    if (dr) { shouldRefreshRoomsList = true; var ru = dr.ht; ru.find(".uc").text(dr.uco + '/' + dr.max); ru.attr('v', dr.uco); }
+                    if (or) { shouldRefreshRoomsList = true; var ru = or.ht; ru.find(".uc").text(or.uco + '/' + or.max); ru.attr('v', or.uco); }
+                } else if (mic.indexOf(uid) != -1) updateRoomMicsStatus();
+                break;
+            case 'u^':
+                if (!ignoredUsersList || !userBadges[data.id]) return;
+                var oldu = allUsersList[data.id];
+                Object.assign(allUsersList[data.id], data);
+                if (Object.keys(data).length == 2 && data.rep != null) return;
+                updateUserRowInUi(data.id, oldu, data);
+                if (oldu.topic != data.topic || oldu.power != data.power || oldu.roomid != data.roomid || data.power != null) shouldRefreshUsersList = true;
+                break;
+            case 'r^':
+                var old = rcach[data.id];
+                data.ht = old.ht;
+                data.uco = old.uco;
+                var gave = (mic.indexOf(myid) == -1 && data.m.indexOf(myid) != -1);
+                var took = (mic.indexOf(myid) != -1 && data.m.indexOf(myid) == -1);
+                if (data.id == myroom) {
+                    data.ops = old.ops;
+                    mic = data.m;
+                    updateRoomMicsStatus();
+                    if (gave) { getUsersInSpecificRoom(myroom).forEach(function (ru) { if (ru.id != myid) connectVoiceToUser(ru); }); }
+                    if (took) {
+                        for (var c in peerConnections) if (c.indexOf('_') == 0) { var pc = peerConnections[c]; pc.on = null; pc.destroy(); delete peerConnections[c]; send('p2', { t: 'x', dir: 1, id: pc.uid }); }
+                        if (localAudioStream) { try { localAudioStream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) { } localAudioStream = null; }
+                    }
+                }
+                rcach[data.id] = data;
+                chatRoomsList = $.grep(chatRoomsList, function (r) { return r.id != data.id; });
+                if (old.topic != data.topic) shouldRefreshRoomsList = true;
+                chatRoomsList.push(data);
+                updateRoomRowInSidebarUi(data);
+                if (data.id == myroom) { if (data.v == true) { $("#mic").show(); fixSize(true); } else { $("#mic").hide(); fixSize(true); } }
+                break;
+            case "rlist":
+                chatRoomsList = data;
+                chatRoomsArray = data;
+                var q = [];
+                for (var i = 0; i < chatRoomsList.length; i++) { var r = chatRoomsList[i]; rcach[r.id] = r; q.push(compileRoomRowHtml(r, true)); }
+                $("#rooms").append(q);
+                $("#brooms").attr("title", "غرف الدردشه: " + chatRoomsList.length);
+                break;
+            case 'r+':
+                rcach[data.id] = data;
+                chatRoomsList.push(data);
+                chatRoomsArray = chatRoomsList;
+                compileRoomRowHtml(data);
+                $("#brooms").attr("title", "غرف الدردشه: " + chatRoomsList.length);
+                break;
+            case 'r-':
+                var del = rcach[data.id];
+                delete rcach[data.id];
+                chatRoomsList = $.grep(chatRoomsList, function (r) { return r.id != data.id; });
+                chatRoomsArray = chatRoomsList;
+                $("#brooms").attr("title", "غرف الدردشه: " + chatRoomsList.length);
+                del.ht.remove();
+                break;
+            case "cp_bots":
+                if (data.bots_minStay) {
+                    $("#cp .bots_minStay").val(data.bots_minStay);
+                    $("#cp .bots_maxStay").val(data.bots_maxStay);
+                    $("#cp .bots_minLeave").val(data.bots_minLeave);
+                    $("#cp .bots_maxLeave").val(data.bots_maxLeave);
+                    $("#cp .bots_active").val(data.bots_active == true ? 'true' : 'false');
+                    $("#cp .botsb").text(data.max + '/' + data.used);
+                    return;
+                }
+                $("#cp .botso").text(data.filter(function (b) { return b.stat == 0; }).length);
+                $("#cp #cp_bots .tablesorter").remove();
+                var tbl = buildTableHtmlElement("الحاله,الدوله,الزخرفه,الوصف,إعجاب,تثبيت الغرفه,الصوره".split(','));
+                $("#cp #cp_bots").append(tbl);
+                $.each(data, function (i, bot) {
+                    var btns = "<img style='object-fit:contain;object-position:center;width:44px;height:40px;' class='r" + bot.id + "' src='" + bot.pic + "'><a class='btn btn-info fa fa-gear' onclick='cp_bots(this,\"" + bot.id + "\");'></a>";
+                    var rroom = bot.or ? rcach[bot.or] : null;
+                    var row = insertRowIntoTable(tbl, [bot.stat == 0 ? "متصل" : '', bot.co || '--', bot.topic, bot.msg, formatNumberWithCommas(bot.rep || 0) + '', rroom ? rroom.topic : '', btns], [140, 120, 120, 120, 60, 80]);
+                    row.find("td:eq(2)").css({ 'background-color': bot.bg, 'color': bot.ucol });
+                });
+                $("#cp #cp_bots .tablesorter").trigger("update");
+                $("#cp .tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                break;
+            case "cp_rooms":
+                $("#cp #cp_rooms .tablesorter").remove();
+                var tbl = buildTableHtmlElement("الغرفه,صاحب الغرفه,اعدادات".split(','));
+                $("#cp #cp_rooms").append(tbl);
+                $.each(data, function (i, rm) {
+                    var btns = "<img style='object-fit:contain;object-position:center;width:44px;height:40px;' class='r" + rm.id + "' src='" + rm.pic + "'><a class='btn btn-info fa fa-gear' onclick='redit(\"" + rm.id + "\");'></a>";
+                    insertRowIntoTable(tbl, [rm.topic, rm.user, btns], [140, 120, 120]);
+                });
+                $("#cp #cp_rooms .tablesorter").trigger("update");
+                $("#cp .tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                break;
+            case "cp_owner":
+                $("#sett_name").val(data.site.name);
+                $("#sett_title").val(data.site.title);
+                $("#sett_description").val(data.site.description);
+                $("#sett_keywords").val(data.site.keywords);
+                $("#sett_scr").val(data.site.script);
+                $(".wall_likes").val(data.site.wall_likes || 0);
+                $(".wall_minutes").val(data.site.wall_minutes || 0);
+                $(".pmlikes").val(data.site.pmlikes || 0);
+                $(".msgstt").val(data.site.msgst || 0);
+                $(".notlikes").val(data.site.notlikes || 0);
+                $(".fileslikes").val(data.site.fileslikes || 0);
+                $(".proflikes").val(data.site.proflikes || 0);
+                $(".piclikes").val(data.site.piclikes || 0);
+                $(".maxIP").val(data.site.maxIP || 2);
+                $(".maxshrt").val(data.site.maxshrt || 1);
+                $(".stay").val(data.site.stay || 1);
+                $(".allowg").prop("checked", data.site.allowg == true);
+                $(".allowreg").prop("checked", data.site.allowreg == true);
+                $(".rc").prop("checked", data.site.rc == true);
+                $("#bclikes").prop("checked", data.site.bclikes == true);
+                $("#mlikes").prop("checked", data.site.mlikes == true);
+                $("#bcreply").prop("checked", data.site.bcreply == true);
+                $("#mreply").prop("checked", data.site.mreply == true);
+                $("#calls").prop("checked", data.site.calls == true);
+                $(".callsLike").val(data.site.callsLike || 0);
+                var cp1 = new jscolor.color($("#cp .sbg")[0], {});
+                cp1.fromString(data.site.bg);
+                cp1 = new jscolor.color($(".sbackground")[0], {});
+                cp1.fromString(data.site.background);
+                cp1 = new jscolor.color($(".sbuttons")[0], {});
+                cp1.fromString(data.site.buttons);
+                var sico = $(".p-sico");
+                sico.children().remove();
+                var pmap = {};
+                var arr = activeAlerts;
+                if (arr) for (var i = 0; i < arr.length; i++) pmap[arr[i].ico + 'x'] = true;
+                $.each(data.sico, function (i, ic) {
+                    var d = $("<div style='display:inline-block;padding:2px;margin:2px;margin-top:2px;' class='border'><img style='max-width:220px;max-height:32px;'><a style='margin-left:4px;padding:4px;' onclick='del_ico(this);' class='btn btn-" + (pmap[ic + 'x'] ? "success" : "danger") + " fa fa-times'>.</a></div>");
+                    d.find("img").attr("src", "sico/" + ic);
+                    d.find('a').attr("pid", "sico/" + ic);
+                    sico.append(d);
+                });
+                sico = $(".p-dro3");
+                sico.children().remove();
+                $.each(data.dro3, function (i, dr) {
+                    var d = $("<div style='display:inline-block;padding:2px;margin:2px;margin-top:2px;' class='border'><img style='max-width:220px;max-height:32px;'><a style='margin-left:4px;padding:4px;' onclick='del_ico(this);' class='btn btn-danger fa fa-times'>.</a></div>");
+                    d.find("img").attr('src', "dro3/" + dr);
+                    d.find('a').attr('pid', "dro3/" + dr);
+                    sico.append(d);
+                });
+                sico = $(".p-emo");
+                sico.children().remove();
+                $.each(data.emo, function (i, em) {
+                    var d = $("<div style='display:inline-block;padding:2px;margin:2px;margin-top:2px;' class='border'><input style='width:48px;' type='number' value='" + (i + 1) + "' onchange='emo_order();'><img style='max-width:24px;max-height:24px;'><a style='margin-left:4px;padding:4px;' onclick='del_ico(this);' class='btn btn-danger fa fa-times'>.</a></div>");
+                    d.find('img').attr("src", "emo/" + em);
+                    d.find('a').attr('pid', "emo/" + em);
+                    sico.append(d);
+                });
+                $(".emo_order").off().click(function () {
+                    var sorted = $(".p-emo img").toArray().map(function (img) { return img.src.split('/').pop(); });
+                    send('cp', { cmd: "emo_order", d: sorted });
+                });
+                break;
+            case "ico+":
+                var seg = data.split('/');
+                var con = $(".p-" + seg[0]);
+                if (seg[0] == "emo") {
+                    var d = $("<div style='display:inline-block;padding:2px;margin:2px;margin-top:2px;' class='border'><input style='width:48px;' type='number' value='" + (con.find('div').length + 1) + "' onchange='emo_order();'><img style='max-width:24px;max-height:24px;'><a style='margin-left:4px;padding:4px;' onclick='del_ico(this);' class='btn btn-danger fa fa-times'>.</a></div>");
+                    d.find("img").attr("src", data);
+                    d.find('a').attr("pid", data);
+                    con.append(d);
+                } else {
+                    var d = $("<div style='display:inline-block;padding:2px;margin:2px;margin-top:2px;' class='border'><img style='max-width:24px;max-height:24px;'><a style='margin-left:4px;padding:4px;' onclick='del_ico(this);' class='btn btn-danger fa fa-times'>.</a></div>");
+                    d.find("img").attr("src", data);
+                    d.find('a').attr("pid", data);
+                    con.append(d);
+                }
+                break;
+            case "ico-":
+                $("a[pid='" + data + "']").parent().remove();
+                break;
+            case "cp_msgs":
+                $("#msgs .tablesorter").remove();
+                var tbl = buildTableHtmlElement("التصنيف,العنوان,الرساله,".split(','));
+                $("#msgs").append(tbl);
+                $.each(data, function (i, msg) {
+                    var btn = "<a class='btn btn-danger fa fa-times' onclick='send(\"cp\",{cmd:\"msgsdel\",id:\"" + msg.id + "\"});$(this).remove();'></a>";
+                    insertRowIntoTable(tbl, [msg.type == 'w' ? "الترحيب" : "الرسائل", msg.t, msg.m, btn], [90, 140, 280, 80]);
+                });
+                $("#msgs .tablesorter").trigger("update").css("width", "380px").find("tbody tr").css("max-width", "120px");
+                $(".tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                break;
+            case "cp_subs":
+                $("#subs .tablesorter").remove();
+                var tbl = buildTableHtmlElement("الإشتراك,العضو,الزخرفه,المده,المتبقي,اخر تواجد,".split(','));
+                $("#subs").append(tbl);
+                data.sort(function (a, b) { return b.rank - a.rank; });
+                var now = new Date().getTime();
+                data.sort(function (a, b) {
+                    var pa = parseUserPowerString(a.power);
+                    var pb = parseUserPowerString(b.power);
+                    return ('[' + (pb.rank || 0).toString().padStart(4, '0') + "] " + b.power).localeCompare('[' + (pa.rank || 0).toString().padStart(4, '0') + "] " + a.power);
+                });
+                var rows = '';
+                $.each(data, function (i, sub) {
+                    if (sub.end > 0) sub.end = Math.ceil((sub.end - now) / 86400000) - 1;
+                    sub.days = sub.days ? "يوم " + sub.days : "دائم";
+                    sub.ls = (now - sub.ls) / 86400000;
+                    var btns = "<a class='btn btn-primary fa fa-times' onclick='send(\"cp\",{cmd:\"setpower\",id:\"" + sub.id + "\",days:0,power:\"\"});$(this).remove();'></a><a class='btn btn-danger fa fa-gear' onclick='cp_ledit(this,\"" + sub.id + "\");'></a>";
+                    rows += buildTableRowHtml(['[' + (parseUserPowerString(sub.power).rank || 0).toString().padStart(4, '0') + "] " + sub.power, sub.user, sub.topic, sub.days, sub.end == 0 ? '' : sub.end.toString().padStart(2, '0'), sub.ls.toFixed(0).toString().padStart(2, '0'), btns], [200, 90, 120, 80, 80, 80, 80]);
+                });
+                tbl.find("tbody").html(rows);
+                $("#subs .tablesorter").trigger("update");
+                break;
+            case "cp_shrt":
+                $("#shrt .tablesorter").remove();
+                var tbl = buildTableHtmlElement("الإختصار,الزخرفه,حذف".split(','));
+                $("#shrt").append(tbl);
+                $.each(data, function (i, sh) {
+                    var btn = "<a class='btn btn-danger fa fa-times' onclick='send(\"cp\",{cmd:\"shrtdel\",name:\"" + sh.name + "\"});$(this).remove();'></a>";
+                    insertRowIntoTable(tbl, [sh.name, sh.value, btn], [80, 400, 80]);
+                });
+                $("#shrt .tablesorter").trigger("update");
+                $(".tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                break;
+            case "cp_fltr":
+                $("#cp #fltr .tablesorter").remove();
+                var tbl = buildTableHtmlElement("التصنيف,الكلمه,حذف".split(','));
+                $("#cp #fltr").append(tbl);
+                $.each(data.a, function (i, f) {
+                    var btn = "<a class='btn btn-danger fa fa-times' onclick='send(\"cp\",{cmd:\"fltrdel\",path:\"" + f.path + "\",id:\"" + f.id + "\"});$(this).parent().parent().remove();'></a>";
+                    insertRowIntoTable(tbl, [f.type, f.v, btn], [90, 300, 80]);
+                });
+                $("#cp #fltr .tablesorter").trigger("update");
+                $("#cp .tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                $("#fltred").html('');
+                for (var i = data.b.length - 1; i >= 0; i--) {
+                    var it = data.b[i];
+                    $("#fltred").append("<div class='fl' style='width:100%;'><span onclick='send(\"cp\",{cmd:\"fltrdelx\",id:\"" + it.id + "\"});$(this).parent().remove();' class='fl btn btn-danger fa fa-times' style='padding:3px 8px;'></span><span class='fl label label-primary'>الكلمه</span>" + it.v + "<br><div class='fl border' style='width:100%;'>" + it.msg + "<br>user: " + it.topic.split('&').join("&amp;") + "<br>IP: " + it.ip + "</div><br></div>");
+                }
+                break;
+            case "cp_bans":
+                $("#bans .tablesorter").remove();
+                var tbl = buildTableHtmlElement("العضو,الحظر,ينتهي في,الحالات,آخر حاله,".split(','));
+                $("#bans").append(tbl);
+                $.each(data, function (i, ban) {
+                    var btns = "<a class='btn btn-danger fa fa-times' onclick='send(\"cp\",{cmd:\"unban\",id:\"" + ban.id + "\"});$(this).parent().parent().remove();'></a>";
+                    btns += "<a class='btn btn-info fa fa-search' onclick=\"$('#cp a[href=\"#fps\"]').click();$('#fps input').val('" + ban.type.replace(/"/g, '').replace(/'/g, '') + "').trigger('change');\"></a>";
+                    insertRowIntoTable(tbl, [ban.user, ban.type, ban.date, ban.co, ban.lc, btns], [80, 190, 120, 84]);
+                });
+                $("#bans .tablesorter").trigger("update");
+                $(".tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                break;
+            case "cp_logins":
+                $("#logins .tablesorter").remove();
+                var tbl = buildTableHtmlElement(["العضو", "الزخرفه", "الآي بي", "الجهاز", "صلاحيات", "لايكات", "آخر تواجد", "التسجيل", '']);
+                var pg = data[data.length - 1];
+                data.splice(data.length - 1, 1);
+                pg.d = new Date(pg.d).getTime();
+                $("#logins").append(tbl);
+                $.each(data, function (i, acc) {
+                    var rd = new Date(acc.regdate);
+                    var regStr = rd.getFullYear() + '/' + (rd.getMonth() + 1) + '/' + rd.getDate();
+                    var btns = "<a class='btn btn-primary fa fa-search' onclick='cp_fps(this,\"" + acc.fp.replace(/"/g, '').replace(/'/g, '') + "\",true);'></a><a class='btn btn-danger fa fa-gear' onclick='cp_ledit(this,\"" + acc.id + "\");'></a>";
+                    insertRowIntoTable(tbl, [acc.u, acc.t, acc.ip, acc.fp, acc.power, formatNumberWithCommas(acc.rep), new Date(pg.d - acc.lastseen).getTime().time(), regStr, "<div class='d-flex'>" + btns + "</div>"], [80, 120, 120, 194, 120, 80, 70, 70, 154]);
+                });
+                $("#logins .fa-arrow-right").text((pg.i + 100).toString()).attr("onclick", "send('cp',{cmd:'logins',q:$('#logins input').val(),i:" + (pg.i + 100) + "});$('#logins .fa').attr('disabled',true);").removeAttr("disabled");
+                $("#logins .fa-arrow-left").text(Math.max(0, pg.i).toString()).attr("onclick", "send('cp',{cmd:'logins',q:$('#logins input').val(),i:" + Math.max(0, pg.i - 100) + "});$('#logins .fa').attr('disabled',true);");
+                if (pg.i > 0) $("#logins .fa-arrow-left").removeAttr("disabled"); else $("#logins .fa-arrow-left").attr("disabled", true);
+                $("#logins .tablesorter").trigger("update");
+                $(".tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                break;
+            case "cp_fps":
+                $("#fps .tablesorter").remove();
+                var tbl = buildTableHtmlElement("الحاله,العضو,الزخرفه,الآي بي,الدوله,الجهاز,المصدر,الدعوه,الوقت,".split(','));
+                var pg = data[data.length - 1];
+                data.splice(data.length - 1, 1);
+                data.sort(function (a, b) { return b.created - a.created; });
+                pg.d = new Date(pg.d).getTime();
+                $("#fps").append(tbl);
+                $.each(data, function (i, fp) {
+                    var btn = "<button class='btn btn-primary fa fa-search' onclick='cp_fps(this,\"" + fp.fp.replace(/"/g, '').replace(/'/g, '') + "\");'></button>";
+                    insertRowIntoTable(tbl, [fp.isreg, fp.username, fp.topic, fp.ip, fp.co, fp.fp, fp.refr || '', fp.r || '', new Date(pg.d - fp.created).getTime().time(), btn], [80, 80, 120, 120, 80, 194, 160, 120, 100, 60]);
+                });
+                $("#fps .tablesorter").trigger("update");
+                $("#fps .fa-arrow-right").text((pg.i + 200).toString()).attr("onclick", "send('cp',{cmd:'fps',q:$('#fps input').val(),i:" + (pg.i + 200) + "});$('#fps .fa').attr('disabled',true);").removeAttr("disabled");
+                $("#fps .fa-arrow-left").text(Math.max(0, pg.i).toString()).attr("onclick", "send('cp',{cmd:'fps',q:$('#fps input').val(),i:" + Math.max(0, pg.i - 200) + "});$('#fps .fa').attr('disabled',true);");
+                if (pg.i > 0) $("#fps .fa-arrow-left").removeAttr("disabled"); else $("#fps .fa-arrow-left").attr("disabled", true);
+                break;
+            case "cp_actions":
+                $("#actions .tablesorter").remove();
+                var tbl = buildTableHtmlElement(["الحاله", "العضو", "العضو الثاني", "الغرفه", "الاي بي", "الوقت"]);
+                var pg = data[data.length - 1];
+                data.splice(data.length - 1, 1);
+                pg.d = new Date(pg.d).getTime();
+                data.sort(function (a, b) { return b.created - a.created; });
+                $("#actions").append(tbl);
+                $.each(data, function (i, act) {
+                    insertRowIntoTable(tbl, [act.type, act.u1, act.u2, act.room, act.ip || '', new Date(pg.d - act.created).getTime().time()], [100, 130, 230, 130, 130, 130]);
+                });
+                $("#actions .fa-arrow-right").text((pg.i + 200).toString()).attr("onclick", "send('cp',{cmd:'actions',q:$('#actions input').val(),i:" + (pg.i + 200) + "});$('#actions .fa').attr('disabled',true);").removeAttr("disabled");
+                $("#actions .fa-arrow-left").text(Math.max(0, pg.i).toString()).attr("onclick", "send('cp',{cmd:'actions',q:$('#actions input').val(),i:" + Math.max(0, pg.i - 200) + "});$('#actions .fa').attr('disabled',true);");
+                if (pg.i > 0) $("#actions .fa-arrow-left").removeAttr("disabled"); else $("#actions .fa-arrow-left").attr("disabled", true);
+                $(".tablesorter").each(function (ti, ta) { $(ta).find('tr').each(function (ri, re) { if (ri % 2 == 0) $(re).css("background-color", "#fffafa"); else $(re).css("background-color", "#fafaff"); }); });
+                $("#actions .tablesorter").trigger("update");
+                break;
+            case "cp_sico":
+                var sel = $(".selbox").val();
+                var list = data;
+                $("#cp .sico").children().remove();
+                $.each(list, function (i, ic) {
+                    var img = $("<img src='sico/" + ic + "' style='max-height:32px;max-width:100%;margin:4px;padding:4px;'>");
+                    img.click(function () {
+                        $(this).parent().find('img').removeClass("unread border");
+                        $(this).addClass("unread border");
+                        $("#cp input[name='ico']").val($(this).attr("src").split('/').pop());
+                    });
+                    if (userPermissionsConfig && userPermissionsConfig.ico == ic) img.addClass("unread border");
+                    $("#cp .sico").append(img);
+                });
+                break;
+            case "cp_domains":
+                cachedDomainsList = data;
+                var sel = $("#cp #domain_list");
+                sel.children().remove();
+                for (var d in cachedDomainsList) {
+                    var opt = $("<option></option>");
+                    opt.attr("value", d);
+                    opt.text(d);
+                    sel.append(opt);
+                }
+                var empty = $("<option></option>");
+                empty.attr("value", '');
+                empty.text('');
+                sel.prepend(empty);
+                sel.off().on("change", function () {
+                    var dom = cachedDomainsList[sel.val()];
+                    $("#domain").val(dom ? dom.domain : '');
+                    $("#domain_name").val(dom ? dom.name : '');
+                    $("#domain_title").val(dom ? dom.title : '');
+                    $("#domain_description").val(dom ? dom.description : '');
+                    $("#domain_keywords").val(dom ? dom.keywords : '');
+                    $("#domain_scr").val(dom ? dom.script : '');
+                    var cp = new jscolor.color($("#cp .domain_sbg")[0], {});
+                    cp.fromString(dom ? dom.bg : "#39536E");
+                    cp = new jscolor.color($("#cp .domain_sbackground")[0], {});
+                    cp.fromString(dom ? dom.background : "#fafafa");
+                    cp = new jscolor.color($("#cp .domain_sbuttons")[0], {});
+                    cp.fromString(dom ? dom.buttons : "#2B3E52");
+                    if (dom) $("#domain_status").text("يتطلب موافقه من جوال هوست,النطاق مستخدم من موقع آخر,فعال".split(',')[dom.status]).css("color", ["red", "orange", "green"][dom.status]);
+                    else $("#domain_status").text('').css("color", "black");
+                });
+                sel.trigger("change");
+                $("#domain").on("input", function () { if (extractRootDomain($("#domain").val()) != $("#domain").val()) $("#domain").css("color", "red"); else $("#domain").css("color", ''); });
+                break;
+        }
+    } catch (e) {
+        console.error(e.stack);
+        if (getQueryParamValue("debug") == '1') alert(cmd + "\n" + e.stack);
+    }
+}
 function tmic(idx) {
     if(isMutedAll || mic.indexOf(myid)!=-1) idx = -1;
     if(idx > -1 && !localAudioStream) {
