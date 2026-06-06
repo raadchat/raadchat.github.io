@@ -35,7 +35,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt     = require('bcryptjs');
 
 // ─── إعدادات ─────────────────────────────────────────────────────────────────
-const PORT          = process.env.PORT          || 5000;
+const PORT          = process.env.PORT          || 8000;
 const ADMIN_KEY     = process.env.ADMIN_KEY     || 'admin123';
 const MAX_MIC_SLOTS = parseInt(process.env.MAX_MIC_SLOTS)  || 5;
 const MAX_WALL      = parseInt(process.env.MAX_WALL_MSGS)  || 200;
