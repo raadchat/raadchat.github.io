@@ -3563,7 +3563,44 @@ switch (actionTypeCode) {
 
 }
 
+  
     // دالة تعديل شكل وألوان صناديق تنبيهات تسجيل الدخول في الواجهة (مثل التبديل للأخضر، الأحمر، الأصفر)
+    function hl(elementSelector, bootstrapClass) {
+    var targetElement = document.querySelector(elementSelector);
+    
+    // إذا لم يوجد العنصر، نخرج بأمان دون التسبب بانهيار السكربت
+    if (!targetElement) {
+        console.warn("العنصر لم يوجد بعد: " + elementSelector);
+        return { innerText: "" }; // إرجاع كائن وهمي لمنع الانهيار
+    }
+
+    var extractedUiType = '';
+    if (targetElement.classList.contains("label")) extractedUiType = "label";
+    else if (targetElement.classList.contains('btn')) extractedUiType = "btn";
+    else if (targetElement.classList.contains("panel")) extractedUiType = "panel";
+
+    // إزالة كلاسات الألوان
+    var colors = ["primary", "danger", "warning", "info", "success"];
+    colors.forEach(function(c) {
+        targetElement.classList.remove(extractedUiType + "-" + c);
+    });
+
+    // إضافة الكلاس الجديد
+    if (extractedUiType) {
+        targetElement.classList.add(extractedUiType + '-' + bootstrapClass);
+    }
+    
+    return targetElement;
+}
+
+// دالة التنبيهات (تم إضافة حماية للتأكد من وجود العنصر)
+function showNotificationToast(alertTypeClass, messageText) {
+    var element = hl("#loginstat", alertTypeClass);
+    if (element) {
+        element.innerText = messageText;
+    }
+}
+
 /*    
 function hl(elementSelector, bootstrapClass) {
     var targetElement = document.querySelector(elementSelector);
