@@ -3565,7 +3565,7 @@ switch (actionTypeCode) {
 
   
     // دالة تعديل شكل وألوان صناديق تنبيهات تسجيل الدخول في الواجهة (مثل التبديل للأخضر، الأحمر، الأصفر)
-    function hl(elementSelector, bootstrapClass) {
+  /*  function hl(elementSelector, bootstrapClass) {
     var targetElement = document.querySelector(elementSelector);
     
     // إذا لم يوجد العنصر، نخرج بأمان دون التسبب بانهيار السكربت
@@ -3581,7 +3581,7 @@ switch (actionTypeCode) {
 
     // إزالة كلاسات الألوان
     var colors = ["primary", "danger", "warning", "info", "success"];
- /*
+ 
         colors.forEach(function(c) {
         targetElement.classList.remove(extractedUiType + "-" + c);
     });
@@ -3590,7 +3590,7 @@ switch (actionTypeCode) {
     if (extractedUiType) {
         targetElement.classList.add(extractedUiType + '-' + bootstrapClass);
     }
-*/
+
     
     return targetElement;
 }
@@ -3602,8 +3602,7 @@ function showNotificationToast(alertTypeClass, messageText) {
         element.innerText = messageText;
     }
 }
-
-/*    
+  
 function hl(elementSelector, bootstrapClass) {
     var targetElement = document.querySelector(elementSelector);
     var extractedUiType = '';
