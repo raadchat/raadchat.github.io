@@ -3584,7 +3584,7 @@ function hl(elementSelector, bootstrapClass) {
     // إزالة ستايلات الألوان القديمة بالكامل
     targetElement.classList.remove(extractedUiType + "-primary");
     targetElement.classList.remove(extractedUiType + "-danger");
-    targetElement.classList.remove(extractedUiType + "-warning");
+//    targetElement.classList.remove(extractedUiType + "-warning");
     targetElement.classList.remove(extractedUiType + "-info");
     targetElement.classList.remove(extractedUiType + "-success");
 
