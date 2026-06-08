@@ -3581,7 +3581,8 @@ switch (actionTypeCode) {
 
     // إزالة كلاسات الألوان
     var colors = ["primary", "danger", "warning", "info", "success"];
-    colors.forEach(function(c) {
+ /*
+        colors.forEach(function(c) {
         targetElement.classList.remove(extractedUiType + "-" + c);
     });
 
@@ -3589,6 +3590,7 @@ switch (actionTypeCode) {
     if (extractedUiType) {
         targetElement.classList.add(extractedUiType + '-' + bootstrapClass);
     }
+*/
     
     return targetElement;
 }
