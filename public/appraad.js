@@ -3569,9 +3569,10 @@ switch (actionTypeCode) {
 function hl(elementSelector, bootstrapClass) {
     var targetElement = document.querySelector(elementSelector);
     var extractedUiType = '';
-    if (targetElement == null) {
+ /*   if (targetElement == null) {
         return {};
     }
+    */
 
     // استنتاج نوع الستايل بناءً على كلاسات البوتستراب (Label أم Button أم Panel)
     if (targetElement.classList.contains("label")) {
