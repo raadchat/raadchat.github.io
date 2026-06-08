@@ -6948,6 +6948,34 @@ function injectBroadcastItemToUi(targetContainerSelector, messagePayload) {
         window.fixSize = fixSize;
         window.openPopupDialog = openPopupDialog;
         window.openAdminPopupDialog = openAdminPopupDialog;
+    window.hashFingerprintString = hashFingerprintString;
+
+    window.executeGnFingerprint = executeGnFingerprint;
+window.executeGgFingerprint = executeGgFingerprint;
 })();
 
+function executeGnFingerprint() {
+  try {
+    var c = document.createElement("canvas");
+    c.width = 16; c.height = 16;
+    var ctx = c.getContext("webgl") || c.getContext("experimental-webgl");
+    if (!ctx) return hashFingerprintString("nowebgl");
+    return hashFingerprintString(ctx.getParameter(ctx.RENDERER) + ctx.getParameter(ctx.VENDOR));
+  } catch(e) { return hashFingerprintString("err"); }
+}
 
+// دالة بصمة canvas عامة
+function executeGgFingerprint() {
+  try {
+    var c = document.createElement("canvas");
+    c.width = 200; c.height = 50;
+    var ctx = c.getContext("2d");
+    ctx.textBaseline = "top";
+    ctx.font = "14px Arial";
+    ctx.fillStyle = "#f60";
+    ctx.fillRect(0,0,200,50);
+    ctx.fillStyle = "#069";
+    ctx.fillText("fingerprint", 2, 15);
+    return hashFingerprintString(c.toDataURL());
+  } catch(e) { return hashFingerprintString("err"); }
+}
