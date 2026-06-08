@@ -3584,7 +3584,7 @@ function hl(elementSelector, bootstrapClass) {
     if (targetElement.classList.contains("panel")) {
         extractedUiType = "panel";
     }
-
+/*
     // إزالة ستايلات الألوان القديمة بالكامل
     targetElement.classList.remove(extractedUiType + "-primary");
     targetElement.classList.remove(extractedUiType + "-danger");
@@ -3596,7 +3596,7 @@ function hl(elementSelector, bootstrapClass) {
     targetElement.classList.add(extractedUiType + '-' + bootstrapClass);
     return targetElement;
 }
-
+*/
 // دالة تغيير نص وحالة صندوق تنبيهات تسجيل الدخول المربوطة بالـ ID المستخرج #loginstat
 function showNotificationToast(alertTypeClass, messageText) {
    // hl("#loginstat", alertTypeClass).innerText = messageText;
