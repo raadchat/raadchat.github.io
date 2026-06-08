@@ -6982,6 +6982,7 @@ function executeGgFingerprint() {
         window.openPopupDialog = openPopupDialog;
         window.openAdminPopupDialog = openAdminPopupDialog;
     window.hashFingerprintString = hashFingerprintString;
+    window.showNotificationToast= showNotificationToast;
 window.initializeSocketConnection= initializeSocketConnection;
     window.executeGnFingerprint = executeGnFingerprint;
 window.executeGgFingerprint = executeGgFingerprint;
