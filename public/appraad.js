@@ -3565,14 +3565,14 @@ switch (actionTypeCode) {
 
   
     // دالة تعديل شكل وألوان صناديق تنبيهات تسجيل الدخول في الواجهة (مثل التبديل للأخضر، الأحمر، الأصفر)
-
+/*
 function hl(elementSelector, bootstrapClass) {
     var targetElement = document.querySelector(elementSelector);
     var extractedUiType = '';
- /*   if (targetElement == null) {
+   if (targetElement == null) {
         return {};
     }
-    */
+    
 
     // استنتاج نوع الستايل بناءً على كلاسات البوتستراب (Label أم Button أم Panel)
     if (targetElement.classList.contains("label")) {
@@ -3584,7 +3584,7 @@ function hl(elementSelector, bootstrapClass) {
     if (targetElement.classList.contains("panel")) {
         extractedUiType = "panel";
     }
-/*
+
     // إزالة ستايلات الألوان القديمة بالكامل
     targetElement.classList.remove(extractedUiType + "-primary");
     targetElement.classList.remove(extractedUiType + "-danger");
@@ -3595,8 +3595,9 @@ function hl(elementSelector, bootstrapClass) {
     // تطبيق لون كلاس البوتستراب الجديد المستهدف (مثال: btn-success للأخضر)
     targetElement.classList.add(extractedUiType + '-' + bootstrapClass);
     return targetElement;
-    */
+    
 }
+*/
 
 // دالة تغيير نص وحالة صندوق تنبيهات تسجيل الدخول المربوطة بالـ ID المستخرج #loginstat
 function showNotificationToast(alertTypeClass, messageText) {
