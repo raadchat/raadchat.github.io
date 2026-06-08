@@ -38,7 +38,7 @@ var myid = null;
 var user_pic = null;
 var room_pic = null;
 
-(() => {
+
 var AudioContextClass = window.AudioContext || window.webkitAudioContext;
 
 function requestMicrophonePermission(constraints, onSuccess, onError) {
@@ -6986,6 +6986,6 @@ function executeGgFingerprint() {
 window.initializeSocketConnection= initializeSocketConnection;
     window.executeGnFingerprint = executeGnFingerprint;
 window.executeGgFingerprint = executeGgFingerprint;
-})();
+
     
 console.log("السكربت تم تحميله بنجاح");
