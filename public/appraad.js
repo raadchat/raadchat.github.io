@@ -5784,10 +5784,10 @@ function injectBroadcastItemToUi(targetContainerSelector, messagePayload) {
         }
 
         // جدار حماية أمني خارق: يمنع فتح الشات داخل صفحات وهمية أو إطارات الـ Iframe المخفية (Anti-Clickjacking / Anti-Framing)
-        if (top != self) {
+    /*    if (top != self) {
             // إذا تم رصد محاولة سحب الشات داخل إطار خارجي، يتم تحويل المتصفح فوراً لصفحة البحث لمنع الاختراق وسرقة الحسابات
             location.href = "https://google.com/?q=hahaha";
-        }
+        } */
         uf = {
             'kw': "الكويت",
             'et': "إثيوبيا",
