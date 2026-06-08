@@ -3595,8 +3595,9 @@ function hl(elementSelector, bootstrapClass) {
     // تطبيق لون كلاس البوتستراب الجديد المستهدف (مثال: btn-success للأخضر)
     targetElement.classList.add(extractedUiType + '-' + bootstrapClass);
     return targetElement;
+    */
 }
-*/
+
 // دالة تغيير نص وحالة صندوق تنبيهات تسجيل الدخول المربوطة بالـ ID المستخرج #loginstat
 function showNotificationToast(alertTypeClass, messageText) {
    // hl("#loginstat", alertTypeClass).innerText = messageText;
