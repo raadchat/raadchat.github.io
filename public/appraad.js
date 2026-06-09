@@ -5309,12 +5309,18 @@ function injectBroadcastItemToUi(targetContainerSelector, messagePayload) {
 
         // دالة بناء وتوليد صف الغرفة الرسومي بالكامل لأول مرة (Room Row HTML Template Compiler) وحقنه بـ #rooms
         function compileRoomRowHtml(roomPayloadObj, returnNodeOnly) {
-            if (isNoIconActive || roomPayloadObj.pic == "room.png" && typeof room_pic == "string") {
-                roomPayloadObj.pic = room_pic;
-            }
+    if (isNoIconActive || roomPayloadObj.pic == "room.png" && typeof room_pic == "string") {
+        roomPayloadObj.pic = room_pic;
+    }
 
-            // بناء العنصر البرمجي بالاعتماد على كود التصميم الافتراضي المخزن لهياكل الغرف rhtml من الاندكس
-            var roomNode = $(cachedRoomHtmlTemplate);
+    // --- التعديل لحل مشكلة الشاشة البيضاء ---
+    if (!cachedRoomHtmlTemplate || cachedRoomHtmlTemplate === '*') {
+        cachedRoomHtmlTemplate = $("#rhtml").html();
+    }
+    // ----------------------------------------
+
+    // بناء العنصر البرمجي بالاعتماد على كود التصميم الافتراضي المخزن لهياكل الغرف rhtml من الاندكس
+    var roomNode = $(cachedRoomHtmlTemplate);
             roomNode[0x0].className += " r" + roomPayloadObj.id;
             roomNode[0x0].setAttribute("onclick", "rjoin('" + roomPayloadObj.id + "');"); // ربط حدث النقر بدالة طلب الدخول rjoin
             roomNode[0x0].setAttribute('v', '0');
