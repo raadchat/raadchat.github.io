@@ -3597,13 +3597,13 @@ function hl(elementSelector, bootstrapClass) {
     return targetElement;
     
 }
-*/
+
 
 // دالة تغيير نص وحالة صندوق تنبيهات تسجيل الدخول المربوطة بالـ ID المستخرج #loginstat
 function showNotificationToast(alertTypeClass, messageText) {
    // hl("#loginstat", alertTypeClass).innerText = messageText;
 }
-
+*/
 // دالة حفظ وتحديث بيانات الملف الشخصي (setprofile) وإرسالها للسيرفر (اسم، حالة، لون النك، لون الخط، خلفية البروفايل)
 function setprofile() {
     var profileDataDataMap = {
