@@ -6993,5 +6993,23 @@ window.initializeSocketConnection= initializeSocketConnection;
     window.executeGnFingerprint = executeGnFingerprint;
 window.executeGgFingerprint = executeGgFingerprint;
 window.updateusers = updateusers;
+      window.msg = msg;             
+        window.pm = pm;               
+        window.bc = bc;               
+        
+        // دوال التحكم في الغرف والمايك
+        window.rjoin = rjoin;         
+        window.mic = mic;             
+        window.upro = upro;           
+        
+        // دوال تسجيل الدخول والتسجيل
+        
+        window.reg = reg;             
+        
+        // دوال إدارة واجهة المستخدم
+        window.compileRoomRowHtml = compileRoomRowHtml; 
+        window.compileUserRowHtml = compileUserRowHtml;
+        window.closePopupDialog = closePopupDialog;
+        
     })();
 console.log("السكربت تم تحميله بنجاح");
