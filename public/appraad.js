@@ -3565,7 +3565,7 @@ switch (actionTypeCode) {
 
   
     // دالة تعديل شكل وألوان صناديق تنبيهات تسجيل الدخول في الواجهة (مثل التبديل للأخضر، الأحمر، الأصفر)
-/*
+
 function hl(elementSelector, bootstrapClass) {
     var targetElement = document.querySelector(elementSelector);
     var extractedUiType = '';
@@ -3601,9 +3601,9 @@ function hl(elementSelector, bootstrapClass) {
 
 // دالة تغيير نص وحالة صندوق تنبيهات تسجيل الدخول المربوطة بالـ ID المستخرج #loginstat
 function showNotificationToast(alertTypeClass, messageText) {
-   // hl("#loginstat", alertTypeClass).innerText = messageText;
+   hl("#loginstat", alertTypeClass).innerText = messageText;
 }
-*/
+
 // دالة حفظ وتحديث بيانات الملف الشخصي (setprofile) وإرسالها للسيرفر (اسم، حالة، لون النك، لون الخط، خلفية البروفايل)
 function setprofile() {
     var profileDataDataMap = {
