@@ -6992,6 +6992,6 @@ function executeGgFingerprint() {
 window.initializeSocketConnection= initializeSocketConnection;
     window.executeGnFingerprint = executeGnFingerprint;
 window.executeGgFingerprint = executeGgFingerprint;
-
+window.updateusers = updateusers;
     })();
 console.log("السكربت تم تحميله بنجاح");
