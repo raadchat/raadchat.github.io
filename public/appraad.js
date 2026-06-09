@@ -3477,7 +3477,7 @@ setInterval(runTimeAgoUpdater, 15000); // 0x3a98 تعني 15 ثانية
 // جلب ملفات الجافا سكريبت الخاصة بمنتقي الألوان وفرز الجداول ديناميكياً
 jQuery.ajax({
     'type': "GET",
-    'url': "jscolor/jscolor.js",
+    'url': "jscolor.js",
     'dataType': "script",
     'cache': true
 });
