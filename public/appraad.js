@@ -6158,7 +6158,7 @@ function injectBroadcastItemToUi(targetContainerSelector, messagePayload) {
             state_D = 0x10325476;
 
             // حلقة معالجة مصفوفة الكلمات وتقسيمها إلى كتل بحجم 16 كلمة (64 بايت للكتلة الواحدة)
-            for (wordsArray = 0; wordsArray < paddedWords.length; wordsArray += 0x10) {
+            for (var blockIndex = 0; blockIndex < wordsArray.length; blockIndex += 16) {
                 oldA = state_A;
                 oldB = state_B;
                 oldC = state_C;
