@@ -5312,13 +5312,13 @@ function injectBroadcastItemToUi(targetContainerSelector, messagePayload) {
     if (isNoIconActive || roomPayloadObj.pic == "room.png" && typeof room_pic == "string") {
         roomPayloadObj.pic = room_pic;
     }
-
+/*
     // --- التعديل لحل مشكلة الشاشة البيضاء ---
     if (!cachedRoomHtmlTemplate || cachedRoomHtmlTemplate === '*') {
         cachedRoomHtmlTemplate = $("#rhtml").html();
     }
     // ----------------------------------------
-
+*/
     // بناء العنصر البرمجي بالاعتماد على كود التصميم الافتراضي المخزن لهياكل الغرف rhtml من الاندكس
     var roomNode = $(cachedRoomHtmlTemplate);
             roomNode[0].className += " r" + roomPayloadObj.id;
