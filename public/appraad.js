@@ -7118,5 +7118,6 @@ window.uploadImageWithProgress = uploadImageWithProgress;
 window.uprochange = uprochange;
 window.wordToHex = wordToHex;
 window.wordsArray = wordsArray;
+    window.paddedWords = paddedWords;
     })();
 console.log("السكربت تم تحميله بنجاح");
