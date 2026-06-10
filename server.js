@@ -159,8 +159,8 @@ class Room {
     this.owner    = null;
     this.botsConfig = { active: false, minStay: 0, maxStay: 0, minLeave: 0, maxLeave: 0 };
     this.settings = {
-      mic: true, setpower: false, ban: false, owner: false,
-      calls: true, mlikes: true, bclikes: true, mreply: false, bcreply: false
+      mic: true, setpower: true, ban: true, owner: true,
+      calls: true, mlikes: true, bclikes: true, mreply: true, bcreply: true
     };
     this.powers   = [];
     this.ops      = [];          // lid[] المشرفون
