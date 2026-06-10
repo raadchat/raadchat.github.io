@@ -4492,6 +4492,10 @@ var room_pic = null;
     if (_0x4150cb || _0x48c1ef.pic == "room.png" && typeof room_pic == "string") {
       _0x48c1ef.pic = room_pic;
     }
+
+    if (!_0x257591 || _0x257591 === '*') {
+        _0x257591 = $("#rhtml").html();
+    }
     var _0x2c5ee9 = $(_0x257591);
     _0x2c5ee9[0x0].className += " r" + _0x48c1ef.id;
     _0x2c5ee9[0x0].setAttribute("onclick", "rjoin('" + _0x48c1ef.id + "');");
