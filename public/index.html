@@ -929,7 +929,251 @@
     <h6 class="hid">
       شات السعودية للجوال<div>شات الجوال.شات السعوديه.شات كتابي للجوال,شات تعب قلبي,شات جوال.دردشه كتابيه,شات للجوال,شات قلوب,شات للجوال,شات فله,شات الخليج,شات فله الخليج,شات عشق,شات فون,شات الشله,شات تعارف,شات تعارف للجوال,شات تحليتنا|شات تحليتنا للجوال|شات فله|شات قلوب|شات الجوال|شات تعب|شات الحب|شات السعودية|شات السعودية للجوال|دردشه جده|شات جده|شات الغربيه|شات ميم|شات السعوديه|شات اليمن|شات واو|شات سكر|شات وله|شات الاصدقاء|شات العراق| السعوديه القديم|شات عشقتك|شات الامارات,شات الجوال,دردشة الجوال,شات الرياض,دردشة الرياض,شات شقى,دردشة شقى,شات توب اكس,دردشة توب اكس,شات عرب,شات ذوق,شات لمحة,شات تعب,شات لورانس,شات حيرتني,شات حيروني,شات هناي,دردشة هناي,شات عرب,شات عيون الريم,شات فهاوة,شات غنج,شات التحلية,شات صوتي,شات للجوال,دردشة صوتية,شات قلوب الصوتي,شات فلة الخليج الصوتي,شات الرياض الصوتي,شات سعودي الصوتي,شات السعودية الصوتي</div>
     </h6> 
+    <div id="cp" class="break d-flex" style="width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; overflow-x: auto; zoom: 95%; background-color: rgb(254, 254, 254);">
+    <div style="margin:1px;width:120px;" class="fl borderg" id="m1">
+      <ul class="nav nav-pills nav-stacked" style="margin-top: 0px;">
+        <li style="display: block;" class="active"><a data-toggle="tab" onclick="send('cp',{cmd:'fps',q:''});" href="#fps" aria-expanded="true">السجل</a></li>
+        <li style="display: block;"><a data-toggle="tab" onclick="send('cp',{cmd:'actions',q:''});" href="#actions">الحالات</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'logins',q:''});" href="#logins" aria-expanded="false">الأعضاء</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'bans'});" href="#bans" aria-expanded="false">الحظر</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'sico',data:{}});cp_powers();" href="#powers" aria-expanded="false">الصلاحيات</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'fltr'});" href="#fltr" aria-expanded="false">فلتر</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'rooms'});" href="#cp_rooms" aria-expanded="false">الغرف</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'shrt'});" href="#shrt" aria-expanded="false">الإختصارات</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'subs'});" href="#subs" aria-expanded="false">الإشتراكات</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'msgs'});" href="#msgs" aria-expanded="false">الرسائل</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'owner'});" href="#sett" aria-expanded="false">إداره الموقع</a></li>
+        <li style="display: block;" class=""><a data-toggle="tab" onclick="send('cp',{cmd:'domains'});" href="#domains" aria-expanded="false">النطاقات</a></li>
+      </ul> 
+    </div>
+    <div class="fl  tab-content" style="height:100%;width:100%;min-width:200px;margin-left:0px;min-height: 100%;">
+      <button class="fa fa-refresh btn btn-success" onclick="$('#m1 .active a').click();" style="position: fixed;top: 6px;right: 8px;"></button>  
+      <div id="actions" class="tab-pane cpactions"> 
+        <button disabled="" class="fa fa-arrow-left btn btn-primary" style="width: 60px;"></button>
+        <button disabled="" class="fa fa-arrow-right btn btn-primary" style="width: 60px;text-align: end;"></button>
+        <input autocomplete="off" placeholder="البحث" value="" onchange="send('cp',{cmd:'actions',q:$(this).val()});">
+      </div>
+      <div id="fps" class="tab-pane cpevents active">
+        <button disabled="" class="fa fa-arrow-left btn btn-primary" style="width: 60px;"></button>
+        <button disabled="" class="fa fa-arrow-right btn btn-primary" style="width: 60px;text-align: end;"></button>
+        <input autocomplete="off" placeholder="البحث" value="" onchange="send('cp',{cmd:'fps',q:$(this).val().trim()});">
+      </div>
+      <div id="logins" class="tab-pane cpactions" style="width: 100%;">
+        <button disabled="" class="fa fa-arrow-left btn btn-primary" style="width: 60px;"></button>
+        <button disabled="" class="fa fa-arrow-right btn btn-primary" style="width: 60px;text-align: end;"></button>
+        <input autocomplete="off" placeholder="البحث اسم العضو\الآي بي\الجهاز" onchange="send('cp',{cmd:'logins',q:$(this).val().trim()});">
+      </div>
+      <div id="bans" class="tab-pane bans">
+       <div style="width: 150%;">  <input autocomplete="off" class="banit" placeholder="رقم الجهاز \\ الدوله \\ الاي بي">
+        <button onclick="send('cp',{cmd:'ban',type:$('.banit').val().trim()});$('.banit').val('')" class="btn btn-danger">حظر</button>
+        <button onclick="send('cp',{cmd:'aban',type:$('.banit').val().trim()});$('.banit').val('')" class="btn btn-success">سماح</button></div>
+      </div>
+      <div id="powers" class="tab-pane" style="width:500px;">
+        <input onchange="cp_powers();" id="psearch" style="width:200px;display: block;margin-bottom: 2px;" placeholder="البحث في الصلاحيات">
+        <select onchange="cp_powerchange();" style="width:200px;display:inline" class="powerbox selbox form-control">
+        </select>
+        <button class="delp btn btn-danger fa fa-times">حذف</button>
+        <div class="sico border fr" style="width:220px;margin-top:1px;margin-right: 4px;">
     
+        </div>
+      </div>
+      <div id="fltr" class="tab-pane fltr">
+        <input class="fltrit" placeholder="اضافه كلمه\موقع">
+        <br><button style="margin:5px;width:200px;" onclick="fltrit('amsgs',$('.fltrit').val());" class="fa fa-check btn btn-success">إضافه ألى الكلمات المسموحه</button>
+        <br><button style="margin:5px;width:200px;" onclick="fltrit('bmsgs',$('.fltrit').val());" class="fa fa-times btn btn-danger">إضافه ألى الكلمات الممنوعه</button>
+        <br><button style="margin:5px;width:200px;" onclick="fltrit('wmsgs',$('.fltrit').val());" class="fa fa-warning btn btn-info">إضافه ألى الكلمات المراقبه</button>
+        <br><b>آخر الكلمات الممنوعه</b>
+        <div id="fltred" class="break" style="width:400px;height:200px;">
+        </div>
+      </div>
+      <div id="cp_rooms" class="tab-pane">
+    
+      </div>
+    
+      <div id="shrt" class="tab-pane">
+        <input style="margin: 4px;" class="shrtname" placeholder="الإختصار \ س1">
+        <br><input style="margin: 4px;" class="shrtvalue" placeholder="الزخرفه \ السلام عليكم">
+        <br><button style="margin:5px;width:200px;" onclick="send('cp',{cmd:'shrtadd',name:$('.shrtname').val(),value:$('.shrtvalue').val()});" class="fa fa-check btn btn-success">إضافه</button>
+        <br>
+      </div>
+      <div id="subs" class="tab-pane">
+    
+      </div>
+      <div id="msgs" class="tab-pane msgs" style="padding:2px;">
+        <input class="msgt" style="width: 200px;" placeholder="عنوان الرساله">
+        <br>
+        <textarea class="msgm" style="width: 200px;" placeholder="الرساله" maxlength="250"></textarea>
+        <br><button style="margin:5px;width:200px;" onclick="send('cp',{cmd:'msgsit',type:'w',t:$('.msgt').val(),m:$('.msgm').val()});" class="fa fa-check btn btn-success">إضافه ألى رسائل الترحيب</button>
+        <br><button style="margin:5px;width:200px;" onclick="send('cp',{cmd:'msgsit',type:'d',t:$('.msgt').val(),m:$('.msgm').val()});" class="fa fa-check btn btn-danger">إضافه ألى الرسائل التلقائيه</button>
+        <br><b>الرسائل</b><br>
+      </div>
+      <div id="sett" class="tab-pane">
+        <div class="border corner" style="padding:4px;">
+          <label class="label label-info fa fa-home">إعدادات الموقع</label>
+          <br>
+          <label class="label label-primary">إسم الموقع</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="sett_name" type="text" placeholder="اسم الموقع: شات كتابي"></textarea>
+          <br>
+          <label class="label label-primary">عنوان الصفحه</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="sett_title" type="text" placeholder="عنوان الصفحه:شات كتابي"></textarea>
+          <br>
+          <label class="label label-primary">وصف الموقع</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="sett_description" type="text" placeholder="وصف الموقع: مثال شات كتابي"></textarea>
+          <br>
+          <label class="label label-primary">الكلمات الدلاليه</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="sett_keywords" type="text" placeholder="الكلمات الدلاليه: كلمه1,كلمه2,كلمه3"></textarea>
+          <br>
+          <label class="label label-primary">السكربت JavaScript</label>
+          <br>
+          <textarea maxlength="10240" style="width:260px;" id="sett_scr" type="text" placeholder="للمبرمجين فقط"></textarea>
+          <br>
+          <label class="label label-primary">لون القوالب</label>
+          <br>
+          <input class="jscolor color {pickerPosition:'top'} sbg dots" style="width: 80px; color: rgb(255, 255, 255); background-image: none; background-color: rgb(0, 0, 0);" autocomplete="off">
+          <br>
+          <label class="label label-primary">لون المحتوى</label>
+          <br>
+          <input class="color {pickerPosition:'top'} sbackground dots" style="width: 80px; color: rgb(255, 255, 255); background-image: none; background-color: rgb(0, 0, 0);" autocomplete="off">
+          <br>
+          <label class="label label-primary">لون الأزرار</label>
+          <br>
+          <input class="color {pickerPosition:'top'} sbuttons dots" style="width: 80px; color: rgb(255, 255, 255); background-image: none; background-color: rgb(0, 0, 0);" autocomplete="off">
+          <br>
+          <label class="label label-primary">الرسائل</label>
+          <br> <input type="number" min="5" value="5" class="msgstt dots" style="width: 80px;" autocomplete="off"><b>المده بالدقائق للرسائل التلقائيه</b>
+          <br>
+          <label class="label label-primary">الحائط</label>
+          <br><input type="number" min="0" value="0" class="wall_likes dots" style="width: 80px;" autocomplete="off"><b>عدد الايكات</b>
+    
+          <br> <input type="number" min="0" value="0" class="wall_minutes dots" style="width: 80px;" autocomplete="off"><b>المده بين رسائل الحائط بالدقيقه</b>
+    
+          <br>
+          <label class="label label-primary">الزوار</label>
+          <br>
+          <input id="allowg" type="checkbox" class="allowg dots" autocomplete="off">
+          <label for="allowg" class="checkbox-inline">السماح بدخول الزوار</label>
+          <br>
+          <input id="allowreg" type="checkbox" class="allowreg corner dots" autocomplete="off">
+          <label for="allowreg" class="checkbox-inline">السماح بتسجيل العضويات</label>
+          <br>
+          <input id="rc" type="checkbox" class="rc dots" autocomplete="off">
+          <label for="rc" class="checkbox-inline">إستعاده الاتصال</label>
+          <br>
+          <input id="bclikes" type="checkbox" class="dots" autocomplete="off">
+          <label for="bclikes" class="checkbox-inline">ﻻيكات الحائط</label>
+          <br>
+          <input id="mlikes" type="checkbox" class=" dots" autocomplete="off">
+          <label for="mlikes" class="checkbox-inline">ﻻيكات العام</label>
+          <br>
+          <input id="mreply" type="checkbox" class=" dots" autocomplete="off">
+          <label for="mreply" class="checkbox-inline">ردود العام</label>
+          <br>
+          <input id="bcreply" type="checkbox" class=" dots" autocomplete="off">
+          <label for="bcreply" class="checkbox-inline">ردود الحايط</label>
+          <br>
+          <br><input type="number" min="0" value="0" class="pmlikes dots" style="width: 80px;" autocomplete="off"><b>عدد الايكات للمحادثات الخاصه</b>
+          <br><input type="number" min="0" value="0" class="notlikes dots" style="width: 80px;" autocomplete="off"><b>عدد الايكات للتنبيهات</b>
+          <br><input type="number" min="0" value="0" class="fileslikes dots" style="width: 80px;" autocomplete="off"><b>عدد الايكات لإرسال صور\فيديو</b>
+          <br><input type="number" min="0" value="0" class="proflikes dots" style="width: 80px;" autocomplete="off"><b>عدد الايكات لتغير الزخرفه والحاله</b>
+          <br><input type="number" min="0" value="0" class="piclikes dots" style="width: 80px;" autocomplete="off"><b>عدد الايكات لتغير الصوره</b>
+            <br><input type="number" min="1" value="5" max="10" class="maxshrt dots" style="width: 80px;" autocomplete="off"><b>عدد الاختصارت في الرساله الواحده</b>
+            <br><input type="number" min="2" value="5" class="maxIP dots" style="width: 80px;" autocomplete="off"><b>تعدد النكات من نفس الجهاز</b>
+            <br><input type="number" min="1" value="1" class="stay dots" style="width: 80px;" autocomplete="off"><b>تثبيت النكات بعد انقطاع النت</b>
+            <br>
+            <input id="calls" type="checkbox" class=" dots" autocomplete="off">
+            <label for="calls" class="checkbox-inline">تفعيل المكالمات</label>
+            <br><input type="number" min="0" value="0" class="callsLike dots" style="width: 80px;" autocomplete="off"><b>الايكات المطلوبه لإجراء مكالمات</b>
+          <br>
+          <label class="btn btn-danger label fa fa-save border" onclick="sett_save();">حفظ</label>
+          <br>
+        </div>
+        <div class="border" style="padding:4px;margin-top:-1px;">
+          <label class="label label-info fa fa-gear">خيارات الموقع</label>
+          <br>
+          <label class="label label-primary">الايقونات</label>
+          <div style="width:360px;" class="p-site break">
+            <label class="label label-primary">ايقونه الموقع favicon.ico</label><br>
+            <img dsrc="favicon.ico" style="width: 32px;height: 32px;object-fit: contain;object-position: top;" onclick="sendfilea(this,function(fn){send('cp',{cmd:'favicon',fn:fn});});">
+            <br>
+            <label class="label label-primary">صوره الموقع prv1.png</label><br>
+            <img dsrc="prv1.png" style="width: 32px;height: 32px;object-fit: contain;object-position: top;" onclick="sendfilea(this,function(fn){send('cp',{cmd:'prv1',fn:fn});});">
+            <br>
+            <label class="label label-primary">صوره العضو pic.png</label><br>
+            <img dsrc="pic.png" style="width: 32px;height: 32px;object-fit: contain;object-position: top;" onclick="sendfilea(this,function(fn){send('cp',{cmd:'pic',fn:fn});});">
+            <br>
+            <label class="label label-primary">صوره الغرف room.png</label><br>
+            <img dsrc="room.png" style="width: 32px;height: 32px;object-fit: contain;object-position: top;" onclick="sendfilea(this,function(fn){send('cp',{cmd:'room',fn:fn});});">
+            <br>
+          </div>
+          <br>
+          <label class="label label-primary fa fa-image">ايقونات السوابر</label><span class="btn btn-primary minix fa fa-plus border" onclick="sendfilea(this,function(fn){send('cp',{cmd:'addico',pid:fn,tar:'sico'});});"></span>
+          <div style="width:360px;" class="p-sico break">
+          </div>
+          <br>
+          <label class="label label-primary fa fa-image">ايقونات الهدايا</label><span class="btn btn-primary minix fa fa-plus border" onclick="sendfilea(this,function(fn){send('cp',{cmd:'addico',pid:fn,tar:'dro3'});});"></span>
+          <div style="width:360px;" class="p-dro3 break">
+          </div>
+          <br>
+          <label class="label label-primary fa fa-image">الإبتسامات</label><span class="btn btn-primary minix fa fa-plus border" onclick="sendfilea(this,function(fn){send('cp',{cmd:'addico',pid:fn,tar:'emo'});});"></span><span class="btn emo_order btn-primary minix fa fa-save border">حفظ</span>
+          <div style="width:360px;" class="p-emo break">
+          </div>
+        </div>
+      </div>
+      <div id="domains" class="tab-pane"> 
+        <div class="border corner" style="padding:4px;">
+          <label class="label label-success fa fa-home">النطاقات</label>
+          <br> 
+          <select style="width:200px;display:inline" id="domain_list" class="form-control">
+          </select> <label class="btn btn-danger label fa fa-times border" onclick="send('cp',{cmd:'domaindel',d:$('#domain_list').val()});">إزاله</label>
+           <br>
+           <label id="domain_status" class=""></label>
+           <br>
+          <label class="label label-primary">إسم النطاق site.com?</label>
+          <br>
+          <input maxlength="5120" style="width:260px;" id="domain" type="text" placeholder="site.com">
+          <br>
+          <label class="label label-primary">إسم الموقع</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="domain_name" type="text" placeholder="اسم الموقع: شات كتابي"></textarea>
+          <br>
+          <label class="label label-primary">عنوان الصفحه</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="domain_title" type="text" placeholder="عنوان الصفحه:شات كتابي"></textarea>
+          <br>
+          <label class="label label-primary">وصف الموقع</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="domain_description" type="text" placeholder="وصف الموقع: مثال شات كتابي"></textarea>
+          <br>
+          <label class="label label-primary">الكلمات الدلاليه</label>
+          <br>
+          <textarea maxlength="5120" style="width:260px;" id="domain_keywords" type="text" placeholder="الكلمات الدلاليه: كلمه1,كلمه2,كلمه3"></textarea>
+          <br>
+          <label class="label label-primary">السكربت JavaScript</label>
+          <br>
+          <textarea maxlength="10240" style="width:260px;" id="domain_scr" type="text" placeholder="للمبرمجين فقط"></textarea>
+          <br>
+          <label class="label label-primary">لون القوالب</label>
+          <br>
+          <input class="jscolor color {pickerPosition:'top'} domain_sbg dots" style="width: 80px; color: rgb(255, 255, 255); background-image: none; background-color: rgb(0, 0, 0);" autocomplete="off">
+          <br>
+          <label class="label label-primary">لون المحتوى</label>
+          <br>
+          <input class="color {pickerPosition:'top'} domain_sbackground dots" style="width: 80px; color: rgb(255, 255, 255); background-image: none; background-color: rgb(0, 0, 0);" autocomplete="off">
+          <br>
+          <label class="label label-primary">لون الأزرار</label>
+          <br>
+          <input class="color {pickerPosition:'top'} domain_sbuttons dots" style="width: 80px; color: rgb(255, 255, 255); background-image: none; background-color: rgb(0, 0, 0);" autocomplete="off">
+          <br> 
+          <label class="btn btn-danger label fa fa-save border" onclick="domains_save();">حفظ</label>
+          <br>
+        </div>
+      </div>
+    </div>
+    </div>
     
 <script src="b.js"></script>   
 <script src="sm.js" async=""></script>   
