@@ -89,13 +89,17 @@ app.use(express.json());
 // appraad2.js: $("#settings .cp").attr("href", "cp?cp=" + myid)
 // → المتصفح يطلب GET /cp?cp=... فيُعاد cp.html
 app.get('/cp', (req, res) => {
-  // appraad.js يتحقق من كوكي 'cp' — إذا لم تكن موجودة على /cp يُعيد التوجيه لـ /
-  // نضبط الكوكي مع كل طلب حتى تعمل لوحة التحكم بدون إعادة توجيه
-  // path:'/cp' مهم — بدونه يظهر الكوكي في الصفحة الرئيسية أيضاً فتُعيد التحويل لـ /
-  res.cookie('cp', '1', { httpOnly: false, sameSite: 'Lax', path: '/' });
-//  res.sendFile(path.join(__dirname, 'public', 'cp.html'));
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  const userId = req.query.cp;
+  const user   = [...users.values()].find(u => u.id === userId);
+  if (!user || user.rank < 9000) return res.redirect('/');
 
+  res.cookie('cp', '1', {
+    httpOnly: false,   // appraad.js يقرأه بـ document.cookie
+    sameSite: 'Lax',
+    path:     '/',     // مهم: يجب أن يكون / وليس /cp
+    maxAge:   3600000  // ساعة واحدة
+  });
+  res.sendFile(path.join(__dirname, 'public', 'index.html')); // نفس index.html
 });
 
 // ─── قواعد البيانات في الذاكرة ────────────────────────────────────────────────
