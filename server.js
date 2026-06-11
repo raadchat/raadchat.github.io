@@ -92,7 +92,7 @@ app.get('/cp', (req, res) => {
   // appraad.js يتحقق من كوكي 'cp' — إذا لم تكن موجودة على /cp يُعيد التوجيه لـ /
   // نضبط الكوكي مع كل طلب حتى تعمل لوحة التحكم بدون إعادة توجيه
   // path:'/cp' مهم — بدونه يظهر الكوكي في الصفحة الرئيسية أيضاً فتُعيد التحويل لـ /
-  res.cookie('cp', '1', { httpOnly: false, sameSite: 'Lax', path: '/cp' });
+  res.cookie('cp', '1', { httpOnly: false, sameSite: 'Lax', path: '/' });
 //  res.sendFile(path.join(__dirname, 'public', 'cp.html'));
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 
