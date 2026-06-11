@@ -566,7 +566,7 @@ var room_pic = null;
       $("#room,#dpnl").remove();
       jQuery.ajax({
         'type': "GET",
-        'url': "jscolor/jscolor.js",
+        'url': "jscolor.js",
         'dataType': "script",
         'cache': true
       });
