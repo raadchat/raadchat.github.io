@@ -96,7 +96,7 @@ app.get('/cp', (req, res) => {
   res.cookie('cp', '1', {
     httpOnly: false,   // appraad.js يقرأه بـ document.cookie
     sameSite: 'Lax',
-    path:     '/',     // مهم: يجب أن يكون / وليس /cp
+    path:     '/cp',     // مهم: يجب أن يكون / وليس /cp
     maxAge:   3600000  // ساعة واحدة
   });
   res.sendFile(path.join(__dirname, 'public', 'index.html')); // نفس index.html
