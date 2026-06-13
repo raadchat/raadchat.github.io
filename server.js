@@ -91,7 +91,7 @@ app.use(express.json());
 app.get('/cp', (req, res) => {
   const userId = req.query.cp;
   const user   = [...users.values()].find(u => u.id === userId);
-  if (!user || user.rank < 9000) return res.redirect('/');
+  if (!user || user.rank < 8000) return res.redirect('/');
 
   res.cookie('cp', '1', {
     httpOnly: false,   // appraad.js يقرأه بـ document.cookie
