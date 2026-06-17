@@ -570,6 +570,7 @@ function seedAdmin() {
     pass:    bcrypt.hashSync(adminPass, SALT_ROUNDS),
     // أعلى رتبة ← isAdmin() يتحقق rank >= 9000
     power:   'adminster',
+    rank: 9999,
     pic:     existing?.pic  || 'pic.png',
     ico:     existing?.ico  || '',
     rep:     existing?.rep  || 0,
