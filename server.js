@@ -93,6 +93,14 @@ app.use(express.json());
 app.get('/cp', (req, res) => {
   const cpId = req.query.cp;
   if (!cpId) return res.redirect('/');
+
+res.cookie('cp', '1', {
+    httpOnly: false,   // appraad.js يقرأه بـ document.cookie
+    sameSite: 'Lax',
+    path:     '/',     // مهم: يجب أن يكون / وليس /cp
+    maxAge:   3600000  // ساعة واحدة
+  });
+  
   // تحقق سيرفر-سايد: المستخدم متصل ولديه صلاحية cp
   // byUID وrooms وbuildPower كلها متاحة لأن الـ handler يُنفَّذ عند الطلب لا عند التسجيل
   const cpUser = byUID(cpId);
