@@ -99,7 +99,7 @@ app.get('/cp', (req, res) => {
   if (!cpUser) return res.redirect('/');
   const cpRoom = cpUser.roomid ? rooms.get(cpUser.roomid) : null;
   if (!buildPower(cpUser, cpRoom).cp) return res.redirect('/cp');
-  res.sendFile(path.join(__dirname, 'public', 'cp.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ─── قواعد البيانات في الذاكرة ────────────────────────────────────────────────
