@@ -92,13 +92,13 @@ app.use(express.json());
 // المصادقة الكاملة داخل العميل: window.opener.myid == _0x51f8c1
 app.get('/cp', (req, res) => {
   const cpId = req.query.cp;
-  if (!cpId) return res.redirect('/cp');
+  if (!cpId) return res.redirect('/and');
   // تحقق سيرفر-سايد: المستخدم متصل ولديه صلاحية cp
   // byUID وrooms وbuildPower كلها متاحة لأن الـ handler يُنفَّذ عند الطلب لا عند التسجيل
   const cpUser = byUID(cpId);
-  if (!cpUser) return res.redirect('/cp');
+  if (!cpUser) return res.redirect('/');
   const cpRoom = cpUser.roomid ? rooms.get(cpUser.roomid) : null;
-  if (!buildPower(cpUser, cpRoom).cp) return res.redirect('/cp');
+  if (!buildPower(cpUser, cpRoom).cp) return res.redirect('/');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
