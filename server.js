@@ -99,7 +99,7 @@ app.get('/cp', (req, res) => {
   // فهنا يكفي إننا نتأكد إن المستخدم موجود ومتصل فعلاً، بدون اشتراط غرفة أو صلاحية
   const cpUser = byUID(cpId);
   if (!cpUser) return res.redirect('/');
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'cp.html'));
 });
 
 // ─── قواعد البيانات في الذاكرة ────────────────────────────────────────────────
