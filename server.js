@@ -119,13 +119,7 @@ app.get('/cp', (req, res) => {
     '    if(!Array.isArray(e.data))return;',
     '    if(e.data[0]==="con"){',
     '      _done=true;',
-    '      window.removeEventListener("message",_g,true);'
-   '      setTimeout(function(){',
-    '        var c=document.getElementById("cp");',
-    '        var r=document.getElementById("room");',
-    '        if(c)c.style.display="flex";',
-    '        if(r)r.style.display="none";',
-    '      },120);',
+    '      window.removeEventListener("message",_g,true);',
     '    }else if(e.data[0]==="close"&&!_done){',
     // احجب close المبكر — لأن opener أرسله بسبب رسالة عشوائية من click() قبل تسجيل الـ popup
     '      e.stopImmediatePropagation();',
