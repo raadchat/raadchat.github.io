@@ -91,14 +91,14 @@ app.use(express.json());
 // المصادقة الأولية: سيرفر يتحقق من وجود المستخدم وصلاحية cp
 // المصادقة الكاملة داخل العميل: window.opener.myid == _0x51f8c1
 app.get('/cp', (req, res) => {
-  const cpId = req.query.cp;
-  if (!cpId) return res.redirect('/');
+//  const cpId = req.query.cp;
+//  if (!cpId) return res.redirect('/');
   // التحقق الحقيقي من الصلاحية يصير بالكامل داخل العميل
   // (نافذة الـ cp تبعث postMessage(['con', myid]) للأوبنر،
   //  والأوبنر يرفض/يقفلها لو myid ما يطابق cp_param — appraad.js سطر 269-283 و617-630)
   // فهنا يكفي إننا نتأكد إن المستخدم موجود ومتصل فعلاً، بدون اشتراط غرفة أو صلاحية
-  const cpUser = byUID(cpId);
-  if (!cpUser) return res.redirect('/');
+ // const cpUser = byUID(cpId);
+//  if (!cpUser) return res.redirect('/');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
