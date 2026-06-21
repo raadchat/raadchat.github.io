@@ -97,7 +97,7 @@ app.get('/cp', (req, res) => {
   const cpUser = byUID(cpId);
   if (!cpUser) return res.redirect('/');
 
-  const indexPath = path.join(__dirname, 'public', 'index.html');
+  const indexPath = path.join(__dirname, 'public', 'cp.html');
   let html;
   try { html = require('fs').readFileSync(indexPath, 'utf8'); }
   catch (e) { return res.sendFile(indexPath); }
