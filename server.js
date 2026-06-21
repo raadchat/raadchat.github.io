@@ -119,9 +119,7 @@ app.get('/cp', (req, res) => {
     '    if(!Array.isArray(e.data))return;',
     '    if(e.data[0]==="con"){',
     '      _done=true;',
-    '      window.removeEventListener("message",_g,true);',
-    // بعد اكتمال con: أظهر #cp وأخفِ #room
-    
+    '      window.removeEventListener("message",_g,true);'
     '    }else if(e.data[0]==="close"&&!_done){',
     // احجب close المبكر — لأن opener أرسله بسبب رسالة عشوائية من click() قبل تسجيل الـ popup
     '      e.stopImmediatePropagation();',
@@ -139,7 +137,7 @@ app.get('/cp', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.send(html);
 });
-*/
+
 // ─── قواعد البيانات في الذاكرة ────────────────────────────────────────────────
 /** socketId → User   */  const users    = new Map();
 /** roomId   → Room   */  const rooms    = new Map();
