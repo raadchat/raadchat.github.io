@@ -109,7 +109,7 @@ app.get('/cp', (req, res) => {
   // 1) يحجب رسائل "close" المبكرة (قبل اكتمال握手 con) في مرحلة capture
   //    السبب: _0x5d1dc8() تستدعي click() قبل إرسال con → opener يردّ بـ close
   // 2) بعد استلام con يُظهر #cp ويُخفي #room
-  const scriptLines = [
+ /** const scriptLines = [
     '(function(){',
     '  var p=new URLSearchParams(location.search).get("cp");',
     '  if(!p||location.pathname!=="/cp")return;',
@@ -144,7 +144,7 @@ app.get('/cp', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.send(html);
 });
-
+*/
 // ─── قواعد البيانات في الذاكرة ────────────────────────────────────────────────
 /** socketId → User   */  const users    = new Map();
 /** roomId   → Room   */  const rooms    = new Map();
