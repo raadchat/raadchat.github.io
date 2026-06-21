@@ -109,7 +109,7 @@ app.get('/cp', (req, res) => {
   // 1) يحجب رسائل "close" المبكرة (قبل اكتمال握手 con) في مرحلة capture
   //    السبب: _0x5d1dc8() تستدعي click() قبل إرسال con → opener يردّ بـ close
   // 2) بعد استلام con يُظهر #cp ويُخفي #room
- /** const scriptLines = [
+ const scriptLines = [
     '(function(){',
     '  var p=new URLSearchParams(location.search).get("cp");',
     '  if(!p||location.pathname!=="/cp")return;',
@@ -121,12 +121,7 @@ app.get('/cp', (req, res) => {
     '      _done=true;',
     '      window.removeEventListener("message",_g,true);',
     // بعد اكتمال con: أظهر #cp وأخفِ #room
-    '      setTimeout(function(){',
-    '        var c=document.getElementById("cp");',
-    '        var r=document.getElementById("room");',
-    '        if(c)c.style.display="flex";',
-    '        if(r)r.style.display="none";',
-    '      },120);',
+    
     '    }else if(e.data[0]==="close"&&!_done){',
     // احجب close المبكر — لأن opener أرسله بسبب رسالة عشوائية من click() قبل تسجيل الـ popup
     '      e.stopImmediatePropagation();',
