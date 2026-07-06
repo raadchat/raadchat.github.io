@@ -14,7 +14,7 @@ const io = new Server(server, {
 });
 const bcrypt = require('bcryptjs');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 const SALT_ROUNDS = 10;
 
 // ─── قواعد البيانات المؤقتة (In-Memory Database) ──────────────────────────────
