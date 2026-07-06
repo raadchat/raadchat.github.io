@@ -13,6 +13,21 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 const bcrypt = require('bcryptjs');
+const path = require('path');
+
+// السماح للسيرفر بقراءة ملفات الواجهة من مجلد public
+app.use(express.static('public'));
+app.use(express.json());
+
+// مسار لوحة التحكم (CP) لعرضها كنافذة منبثقة
+app.get('/cp', (req, res) => {
+  const cpId = req.query.cp;
+  if (!cpId) return res.redirect('/');
+  
+  const indexPath = path.join(__dirname, 'public', 'index.html');
+  res.sendFile(indexPath);
+});
+
 
 const PORT = process.env.PORT || 8000;
 const SALT_ROUNDS = 10;
