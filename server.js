@@ -12,7 +12,7 @@ const { Server } = require('socket.io');
 const io = new Server(server, {
   cors: { origin: "*" }
 });
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const PORT = process.env.PORT || 3000;
 const SALT_ROUNDS = 10;
