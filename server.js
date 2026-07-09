@@ -96,6 +96,7 @@ app.get('/cp', (req, res) => {
 
   const cpUser = byUID(cpId);
   if (!cpUser) return res.redirect('/');
+  /*
 
   const indexPath = path.join(__dirname, 'public', 'index.html');
   let html;
@@ -152,6 +153,8 @@ app.get('/cp', (req, res) => {
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.send(html);
+  */
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ─── قواعد البيانات في الذاكرة ────────────────────────────────────────────────
