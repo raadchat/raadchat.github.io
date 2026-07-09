@@ -132,7 +132,7 @@ app.get('/cp', (req, res) => {
     '      },120000);',
     // حجب close المبكر فقط قبل اكتمال con، وضمن سقف أمان 5 ثوانٍ
     // (لتفادي حجب رسائل إغلاق مشروعة لاحقة إذا تأخرت con لأي سبب)
-    '    }else if(e.data[0]==="close"&&!done&&(Date.now()-t0)<5000){',
+    '    }else if(e.data[0]==="close"&&!done&&(Date.now()-t0)<500000000){',
     '      e.stopImmediatePropagation();',
     '    }',
     '  });',
