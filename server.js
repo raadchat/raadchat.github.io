@@ -102,7 +102,7 @@ app.get('/cp', (req, res) => {
   let html;
   try { html = require('fs').readFileSync(indexPath, 'utf8'); }
   catch (e) { return res.sendFile(indexPath); }
-/*
+
   // ▲ إصلاح جوهري: كان السكربت يُحقَن قبل </body> (متأخر جداً). الحاسم في
   //   تنفيذ مستمعي "message" المُسجَّلين على نفس الـ target (window) هو
   //   ترتيب التسجيل فقط — وليس علم useCapture كما افتُرض سابقاً (فرق
@@ -129,7 +129,7 @@ app.get('/cp', (req, res) => {
     // إظهار #cp وإخفاء #room فعلياً بعد اكتمال المصافحة
     '      setTimeout(function(){',
     '        try{ if(window.jQuery){ jQuery("#cp").show(); jQuery("#room").hide(); } }catch(err){}',
-    '      },120);',
+    '      },120000);',
     // حجب close المبكر فقط قبل اكتمال con، وضمن سقف أمان 5 ثوانٍ
     // (لتفادي حجب رسائل إغلاق مشروعة لاحقة إذا تأخرت con لأي سبب)
     '    }else if(e.data[0]==="close"&&!done&&(Date.now()-t0)<5000){',
@@ -150,7 +150,7 @@ app.get('/cp', (req, res) => {
   } else {
     html = fixScript + html;
   }
-*/
+
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.send(html);
   
