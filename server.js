@@ -405,18 +405,18 @@ function checkFilters(text) {
   const lower = String(text).toLowerCase();
   // "مسموح" لها الأولوية المطلقة — تُعفي النص من أي فحص لاحق
   for (const f of arr) {
-    if (f.type === 'allow' && f.v && lower.includes(String(f.v).toLowerCase())) return null;
+    if (f.type === 'amsgs' && f.v && lower.includes(String(f.v).toLowerCase())) return null;
   }
   // "ممنوع" — يمنع الإرسال فوراً
   for (const f of arr) {
-    if (f.type === 'ban' && f.v && lower.includes(String(f.v).toLowerCase())) {
-      return { action: 'ban', v: f.v };
+    if (f.type === 'bmsgs' && f.v && lower.includes(String(f.v).toLowerCase())) {
+      return { action: 'bmsgs', v: f.v };
     }
   }
   // "مراقبة" — يُسمح بالإرسال لكن يُسجَّل
   for (const f of arr) {
-    if (f.type === 'watch' && f.v && lower.includes(String(f.v).toLowerCase())) {
-      return { action: 'watch', v: f.v };
+    if (f.type === 'wmsgs' && f.v && lower.includes(String(f.v).toLowerCase())) {
+      return { action: 'wmsgs', v: f.v };
     }
   }
   return null;
@@ -3388,7 +3388,7 @@ function dispatchCP(socket, user, room, data, adminOk, modOk) {
       //   المعرّف الفريد (id) يُولَّد هنا دائماً في السيرفر، بصرف النظر عمّا
       //   يرسله العميل في path — هذا وحده يمنع استبدال الإضافات السابقة.
       const rawType = String(data?.type || String(data?.path || '').split('/')[0] || '').toLowerCase();
-      const type = ['allow', 'watch', 'ban'].includes(rawType) ? rawType : 'ban';
+      const type = ['amsgs', 'wmsgs', 'bmsgs'].includes(rawType) ? rawType : 'bmsgs';
       arr.push({ id: makeBid(), type, v: word });
       const fList = arr.map(f => ({ id: f.id, path: `${f.type}/${f.id}`, v: f.v, type: f.type }));
       send(socket, 'cp_fltr', { a: fList, b: global.filtersTemp || [] });
