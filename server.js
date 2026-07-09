@@ -96,13 +96,13 @@ app.get('/cp', (req, res) => {
 
   const cpUser = byUID(cpId);
   if (!cpUser) return res.redirect('/');
-  /*
+  
 
   const indexPath = path.join(__dirname, 'public', 'index.html');
   let html;
   try { html = require('fs').readFileSync(indexPath, 'utf8'); }
   catch (e) { return res.sendFile(indexPath); }
-
+/*
   // ▲ إصلاح جوهري: كان السكربت يُحقَن قبل </body> (متأخر جداً). الحاسم في
   //   تنفيذ مستمعي "message" المُسجَّلين على نفس الـ target (window) هو
   //   ترتيب التسجيل فقط — وليس علم useCapture كما افتُرض سابقاً (فرق
@@ -150,11 +150,11 @@ app.get('/cp', (req, res) => {
   } else {
     html = fixScript + html;
   }
-
+*/
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.send(html);
-  */
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  
+    
 });
 
 // ─── قواعد البيانات في الذاكرة ────────────────────────────────────────────────
