@@ -409,8 +409,8 @@ function checkFilters(text) {
   }
   // "ممنوع" — يمنع الإرسال فوراً
   for (const f of arr) {
-    if (f.type === 'bmsgs' && f.v && lower.includes(String(f.v).toLowerCase())) {
-      return { action: 'bmsgs', v: f.v };
+    if (f.type === 'ban' && f.v && lower.includes(String(f.v).toLowerCase())) {
+      return { action: 'ban', v: f.v };
     }
   }
   // "مراقبة" — يُسمح بالإرسال لكن يُسجَّل
@@ -3388,7 +3388,7 @@ function dispatchCP(socket, user, room, data, adminOk, modOk) {
       //   المعرّف الفريد (id) يُولَّد هنا دائماً في السيرفر، بصرف النظر عمّا
       //   يرسله العميل في path — هذا وحده يمنع استبدال الإضافات السابقة.
       const rawType = String(data?.type || String(data?.path || '').split('/')[0] || '').toLowerCase();
-      const type = ['amsgs', 'wmsgs', 'bmsgs'].includes(rawType) ? rawType : 'bmsgs';
+      const type = ['amsgs', 'wmsgs', 'ban'].includes(rawType) ? rawType : 'ban';
       arr.push({ id: makeBid(), type, v: word });
       const fList = arr.map(f => ({ id: f.id, path: `${f.type}/${f.id}`, v: f.v, type: f.type }));
       send(socket, 'cp_fltr', { a: fList, b: global.filtersTemp || [] });
